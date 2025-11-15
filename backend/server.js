@@ -1,0 +1,99 @@
+const express = require('express')
+const cors = require('cors')
+const dotenv = require('dotenv')
+const { connectDatabase } = require('./src/config/database')
+
+// 加载环境变量
+dotenv.config()
+
+const app = express()
+const PORT = process.env.PORT || 3000
+
+// 连接数据库
+connectDatabase()
+
+// 中间件
+app.use(cors())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+// 请求日志
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`)
+  next()
+})
+
+// 健康检查
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  })
+})
+
+// API 路由
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'Fast Info API',
+    version: '1.0.0',
+    endpoints: {
+      articles: '/api/articles',
+      articlesHot: '/api/articles/hot',
+      articlesSearch: '/api/articles/search',
+      health: '/health'
+    }
+  })
+})
+
+// 挂载文章路由
+const articleRoutes = require('./src/routes/article')
+app.use('/api/articles', articleRoutes)
+
+// 错误处理中间件
+app.use((err, req, res, next) => {
+  console.error('Error:', err)
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message || 'Internal Server Error',
+      status: err.status || 500
+    }
+  })
+})
+
+// 404 处理
+app.use((req, res) => {
+  res.status(404).json({
+    error: {
+      message: 'Route not found',
+      status: 404
+    }
+  })
+})
+
+// 启动服务器
+app.listen(PORT, () => {
+  console.log(`
+╔════════════════════════════════════════╗
+║                                        ║
+║       Fast Info Backend Server         ║
+║                                        ║
+║  Status: Running                       ║
+║  Port: ${PORT.toString().padEnd(33)}║
+║  Environment: ${(process.env.NODE_ENV || 'development').padEnd(27)}║
+║  Time: ${new Date().toLocaleString('zh-CN').padEnd(31)}║
+║                                        ║
+╚════════════════════════════════════════╝
+  `)
+})
+
+// 优雅关闭
+process.on('SIGTERM', () => {
+  console.log('\n👋 Received SIGTERM, shutting down gracefully...')
+  process.exit(0)
+})
+
+process.on('SIGINT', () => {
+  console.log('\n👋 Received SIGINT, shutting down gracefully...')
+  process.exit(0)
+})
