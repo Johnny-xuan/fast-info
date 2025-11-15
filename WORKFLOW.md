@@ -11,16 +11,17 @@
 ## 📊 总体进度
 
 ```
-项目进度: ▰▱▱▱▱▱▱▱▱▱ 0%
+项目进度: ▰▰▱▱▱▱▱▱▱▱ 20%
 
-Week 1: ▱▱▱▱▱▱▱ 0/7
+Week 1: ▰▰▱▱▱▱▱ 2/7
 Week 2: ▱▱▱▱▱▱▱ 0/7
 Week 3: ▱▱▱▱▱▱▱ 0/7
 Week 4: ▱▱▱▱▱▱▱ 0/7
 ```
 
-**当前阶段**：准备阶段
-**下一里程碑**：完成项目初始化
+**当前阶段**：Week 1 - 项目搭建
+**下一里程碑**：完成后端框架搭建和首个爬虫
+**最后更新**：2025-11-15
 
 ---
 
@@ -32,7 +33,8 @@ Week 4: ▱▱▱▱▱▱▱ 0/7
 
 **关键成果**：
 - ✅ 项目策划书和工作流文档
-- ⬜ 前后端项目框架搭建完成
+- ✅ 前端项目框架搭建完成（Vue 3 + Vite + TailwindCSS）
+- 🔄 后端项目框架搭建中（已初始化，待完成 API）
 - ⬜ 数据库设计完成
 - ⬜ 至少 2 个数据源爬虫可用
 - ⬜ 基础页面可以展示
@@ -121,78 +123,99 @@ Week 4: ▱▱▱▱▱▱▱ 0/7
 ### Phase 2：前端项目搭建（Day 2-3）
 
 #### 2.1 创建 Vue 项目
-- [ ] **初始化项目**
-  - 状态：⬜ 未开始
+- [x] **初始化项目**
+  - 状态：✅ 已完成
   - 命令：`npm create vite@latest frontend -- --template vue`
   - 位置：`/frontend`
-  - 验收：项目可以启动
+  - 验收：项目可以启动 ✓
 
-- [ ] **安装依赖**
-  - 状态：⬜ 未开始
+- [x] **安装依赖**
+  - 状态：✅ 已完成
   - 依赖列表：
     ```bash
     npm install vue-router@4 pinia axios dayjs
-    npm install -D tailwindcss postcss autoprefixer
-    npm install naive-ui
+    npm install -D tailwindcss@3 postcss autoprefixer
+    npm install naive-ui geist
     ```
-  - 验收：所有依赖安装成功
+  - 验收：所有依赖安装成功 ✓
 
-- [ ] **配置 TailwindCSS**
-  - 状态：⬜ 未开始
+- [x] **配置 TailwindCSS**
+  - 状态：✅ 已完成
   - 文件：`tailwind.config.js`, `postcss.config.js`
-  - 验收：样式可以生效
+  - 验收：样式可以生效 ✓
+  - 备注：降级到 TailwindCSS v3 以兼容 PostCSS
 
-- [ ] **配置路由**
-  - 状态：⬜ 未开始
+- [x] **配置路由**
+  - 状态：✅ 已完成
   - 文件：`src/router/index.js`
   - 路由：/, /tech, /dev, /academic, /search
-  - 验收：路由跳转正常
+  - 验收：路由跳转正常 ✓
 
 #### 2.2 创建基础结构
-- [ ] **创建目录结构**
-  - 状态：⬜ 未开始
+- [x] **创建目录结构**
+  - 状态：✅ 已完成
   - 结构：
     ```
     frontend/
     ├── src/
-    │   ├── views/        # 页面
-    │   ├── components/   # 组件
-    │   ├── api/          # API 调用
-    │   ├── store/        # Pinia store
-    │   ├── router/       # 路由
-    │   ├── assets/       # 静态资源
-    │   └── utils/        # 工具函数
+    │   ├── views/        # 页面 ✓
+    │   ├── components/   # 组件 ✓
+    │   ├── api/          # API 调用 ✓
+    │   ├── store/        # Pinia store ✓
+    │   ├── router/       # 路由 ✓
+    │   ├── assets/       # 静态资源 ✓
+    │   └── utils/        # 工具函数 ✓
     ```
-  - 验收：文件夹创建完成
+  - 验收：文件夹创建完成 ✓
 
-- [ ] **创建基础组件**
-  - 状态：⬜ 未开始
-  - 组件：
-    - `Layout.vue` - 整体布局
-    - `Header.vue` - 顶部导航
-    - `ArticleCard.vue` - 文章卡片
-    - `Loading.vue` - 加载状态
-  - 验收：组件可以使用
+- [x] **创建基础页面**
+  - 状态：✅ 已完成
+  - 页面：
+    - `Home.vue` - 首页（Figma 风格设计）✓
+    - `Tech.vue` - 科技页面 ✓
+    - `Dev.vue` - 开发者页面 ✓
+    - `Academic.vue` - 学术页面 ✓
+    - `Search.vue` - 搜索页面 ✓
+  - 验收：页面可以访问 ✓
 
-- [ ] **配置 API 服务**
-  - 状态：⬜ 未开始
+- [x] **配置 API 服务**
+  - 状态：✅ 已完成
   - 文件：`src/api/request.js`, `src/api/article.js`
   - 说明：封装 axios，配置拦截器
-  - 验收：可以发送请求
+  - 验收：可以发送请求 ✓
+
+#### 2.3 设计系统配置
+- [x] **配置字体系统**
+  - 状态：✅ 已完成
+  - 字体：Geist（英文）+ Noto Sans SC（中文）
+  - 说明：Vercel 官方字体，专业现代感
+  - 验收：字体加载正常 ✓
+
+- [x] **集成项目 Logo**
+  - 状态：✅ 已完成
+  - 文件：`public/logo.png`
+  - 说明：黑底白色波浪线设计
+  - 验收：Logo 显示正常 ✓
+
+- [x] **Figma 风格设计**
+  - 状态：✅ 已完成
+  - 特点：极简、48px 固定顶栏、transform 效果
+  - 参考：https://froth-pry-36578210.figma.site/
+  - 验收：设计风格统一 ✓
 
 ---
 
 ### Phase 3：后端项目搭建（Day 3-4）
 
 #### 3.1 创建 Node.js 项目
-- [ ] **初始化项目**
-  - 状态：⬜ 未开始
+- [x] **初始化项目**
+  - 状态：✅ 已完成
   - 命令：`npm init -y`
   - 位置：`/backend`
-  - 验收：package.json 创建成功
+  - 验收：package.json 创建成功 ✓
 
-- [ ] **安装依赖**
-  - 状态：⬜ 未开始
+- [x] **安装依赖**
+  - 状态：✅ 已完成
   - 依赖列表：
     ```bash
     npm install express mongoose dotenv cors
@@ -200,38 +223,40 @@ Week 4: ▱▱▱▱▱▱▱ 0/7
     npm install node-cron winston joi
     npm install -D nodemon
     ```
-  - 验收：所有依赖安装成功
+  - 验收：所有依赖安装成功 ✓
 
-- [ ] **配置项目结构**
-  - 状态：⬜ 未开始
+- [x] **配置项目结构**
+  - 状态：✅ 已完成
   - 结构：
     ```
     backend/
     ├── src/
-    │   ├── routes/       # 路由
-    │   ├── controllers/  # 控制器
-    │   ├── models/       # 数据模型
-    │   ├── services/     # 业务逻辑
-    │   ├── crawlers/     # 爬虫
-    │   ├── utils/        # 工具
-    │   └── config/       # 配置
-    ├── .env              # 环境变量
-    └── server.js         # 入口文件
+    │   ├── routes/       # 路由 ✓
+    │   ├── controllers/  # 控制器 ✓
+    │   ├── models/       # 数据模型 ✓
+    │   ├── services/     # 业务逻辑 ✓
+    │   ├── crawlers/     # 爬虫 ✓
+    │   ├── utils/        # 工具 ✓
+    │   └── config/       # 配置 ✓
+    ├── .env.example      # 环境变量示例 ✓
+    └── server.js         # 入口文件（待创建）
     ```
-  - 验收：文件夹创建完成
+  - 验收：文件夹创建完成 ✓
 
 #### 3.2 配置数据库
 - [ ] **创建 MongoDB 集群**
-  - 状态：⬜ 未开始
+  - 状态：⬜ 待用户操作
   - 平台：MongoDB Atlas
-  - 说明：选择免费版，区域选择离你近的
+  - 说明：选择免费版 M0，区域选择离你近的
   - 验收：集群创建成功
+  - 备注：需要用户注册账号并创建集群
 
 - [ ] **配置数据库连接**
   - 状态：⬜ 未开始
   - 文件：`src/config/database.js`
   - 说明：使用 mongoose 连接
   - 验收：连接成功无报错
+  - 依赖：需要先完成 MongoDB 集群创建
 
 - [ ] **创建数据模型**
   - 状态：⬜ 未开始
@@ -736,9 +761,40 @@ Week 4: ▱▱▱▱▱▱▱ 0/7
 ## 📝 开发日志
 
 ### 2025-11-15（Week 1, Day 1）
-- ✅ 完成项目策划书
-- ✅ 完成工作流文档
-- ⬜ 待办：开始前端项目初始化
+
+**今日完成**：
+- ✅ 编写项目策划书（PROJECT_PLAN.md）
+- ✅ 制定开发工作流文档（WORKFLOW.md）
+- ✅ 创建 AI 助手工作指南（AI_GUIDE.md）
+- ✅ 初始化 Git 仓库
+- ✅ 创建前端项目（Vue 3 + Vite）
+- ✅ 安装前端依赖（Vue Router, Pinia, Axios, TailwindCSS, Naive UI, Geist）
+- ✅ 配置 TailwindCSS（降级到 v3 解决兼容性问题）
+- ✅ 创建前端目录结构
+- ✅ 配置路由系统（5 个页面）
+- ✅ 封装 API 请求服务
+- ✅ 配置 Pinia 状态管理
+- ✅ 创建基础页面（Home, Tech, Dev, Academic, Search）
+- ✅ 实现 Figma 极简风格设计
+  - 48px 固定顶栏
+  - Transform 效果代替阴影
+  - 纯白背景
+  - 响应式网格布局
+- ✅ 集成项目 Logo（黑底白色波浪线）
+- ✅ 配置字体系统（Geist + Noto Sans SC）
+- ✅ 初始化后端项目（Node.js + Express）
+- ✅ 安装后端依赖
+- ✅ 创建后端目录结构
+- ✅ 配置环境变量示例
+
+**今日问题**：
+- TailwindCSS v4 与 PostCSS 不兼容，已降级到 v3 解决
+
+**明日计划**：
+- 创建后端 server.js 入口文件
+- 配置数据库连接（需要先注册 MongoDB Atlas）
+- 创建 Article 数据模型
+- 创建基础 API 路由
 
 ---
 
