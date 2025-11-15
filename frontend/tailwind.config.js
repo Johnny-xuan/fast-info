@@ -6,6 +6,11 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'Noto Sans SC', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
+        noto: ['Noto Sans SC', 'sans-serif'],
+      },
       colors: {
         primary: {
           50: '#eff6ff',
