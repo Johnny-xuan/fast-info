@@ -1,35 +1,26 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- 顶部导航 -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
-      <div class="max-w-6xl mx-auto px-4">
-        <div class="flex items-center justify-between h-14">
+  <div class="min-h-screen bg-white">
+    <!-- 顶部导航 - Perplexity 风格 -->
+    <header class="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-gray-100">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between h-16">
           <!-- Logo -->
-          <div class="flex items-center space-x-8">
-            <router-link to="/" class="flex items-center space-x-2">
-              <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded"></div>
-              <span class="text-lg font-semibold text-gray-900">Fast Info</span>
-            </router-link>
+          <router-link to="/" class="flex items-center space-x-2 group">
+            <div class="w-7 h-7 bg-black rounded-lg"></div>
+            <span class="text-xl font-medium text-gray-900">Fast Info</span>
+          </router-link>
 
-            <!-- 导航菜单 -->
-            <nav class="hidden md:flex items-center space-x-1">
-              <router-link to="/" class="nav-link">首页</router-link>
-              <router-link to="/tech" class="nav-link">科技</router-link>
-              <router-link to="/dev" class="nav-link">开发者</router-link>
-              <router-link to="/academic" class="nav-link">学术</router-link>
-            </nav>
-          </div>
+          <!-- 导航菜单 - 极简 -->
+          <nav class="hidden md:flex items-center space-x-8">
+            <router-link to="/" class="nav-link">首页</router-link>
+            <router-link to="/tech" class="nav-link">科技</router-link>
+            <router-link to="/dev" class="nav-link">开发者</router-link>
+            <router-link to="/academic" class="nav-link">学术</router-link>
+          </nav>
 
-          <!-- 搜索框 -->
-          <div class="flex items-center space-x-4">
-            <div class="relative">
-              <input
-                type="search"
-                placeholder="搜索..."
-                class="w-64 px-3 py-1.5 text-sm bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
-              />
-            </div>
-            <button class="px-4 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+          <!-- 右侧操作 -->
+          <div class="flex items-center space-x-3">
+            <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
               登录
             </button>
           </div>
@@ -37,142 +28,133 @@
       </div>
     </header>
 
-    <!-- 主内容区 -->
-    <main class="max-w-6xl mx-auto px-4 py-8">
-      <!-- 欢迎区域 -->
-      <div class="bg-white rounded-lg border border-gray-200 p-8 mb-6">
-        <h1 class="text-3xl font-bold text-gray-900 mb-3">Fast Info</h1>
-        <p class="text-gray-600 mb-4">
-          专注于科技、开发者和学术领域的高质量信息聚合平台
+    <!-- 主内容区 - Perplexity 风格 -->
+    <main class="max-w-4xl mx-auto px-6 py-16">
+      <!-- 欢迎标题 - 极简 -->
+      <div class="mb-16">
+        <h1 class="text-5xl font-semibold text-gray-900 mb-4">Fast Info</h1>
+        <p class="text-xl text-gray-500">
+          专注高质量信息聚合
         </p>
-        <div class="flex items-center space-x-4 text-sm text-gray-500">
-          <span>项目开发中</span>
-          <span>·</span>
-          <span>Vue 3 + Vite</span>
-          <span>·</span>
-          <span>v0.1.0</span>
+      </div>
+
+      <!-- 搜索框 - 突出显示 -->
+      <div class="mb-16">
+        <div class="relative">
+          <input
+            type="search"
+            placeholder="搜索或询问任何问题..."
+            class="w-full px-6 py-4 text-base bg-gray-50 border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 transition-all"
+          />
+          <div class="absolute right-4 top-1/2 -translate-y-1/2">
+            <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- 内容区域示例 -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- 主要内容 -->
-        <div class="lg:col-span-2 space-y-4">
-          <!-- 文章卡片示例 -->
-          <article class="bg-white rounded-lg border border-gray-200 p-5 hover:border-gray-300 transition-colors cursor-pointer">
-            <div class="flex items-start space-x-3">
-              <div class="flex flex-col items-center space-y-1 pt-1">
-                <button class="text-gray-400 hover:text-blue-600">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-                  </svg>
-                </button>
-                <span class="text-sm font-medium text-gray-700">42</span>
-                <button class="text-gray-400 hover:text-blue-600">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-                  <span class="font-medium text-gray-700">科技资讯</span>
-                  <span>·</span>
-                  <span>36氪</span>
-                  <span>·</span>
-                  <span>2小时前</span>
-                </div>
-                <h2 class="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600">
-                  示例文章标题 - 这里将显示聚合的新闻标题
-                </h2>
-                <p class="text-sm text-gray-600 mb-3">
-                  这里是文章摘要的预览，展示文章的主要内容和关键信息...
-                </p>
-                <div class="flex items-center space-x-4 text-xs text-gray-500">
-                  <button class="hover:text-gray-700">12 评论</button>
-                  <button class="hover:text-gray-700">分享</button>
-                  <button class="hover:text-gray-700">收藏</button>
-                </div>
-              </div>
-            </div>
-          </article>
+      <!-- 分类标签 - 扁平化 -->
+      <div class="flex items-center space-x-3 mb-12">
+        <button class="px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-full">
+          全部
+        </button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors">
+          科技
+        </button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors">
+          开发者
+        </button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors">
+          学术
+        </button>
+      </div>
 
-          <article class="bg-white rounded-lg border border-gray-200 p-5 hover:border-gray-300 transition-colors cursor-pointer">
-            <div class="flex items-start space-x-3">
-              <div class="flex flex-col items-center space-y-1 pt-1">
-                <button class="text-gray-400 hover:text-blue-600">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-                  </svg>
-                </button>
-                <span class="text-sm font-medium text-gray-700">28</span>
-                <button class="text-gray-400 hover:text-blue-600">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+      <!-- 文章列表 - 极简卡片 -->
+      <div class="space-y-8">
+        <!-- 文章卡片 1 -->
+        <article class="group cursor-pointer">
+          <div class="flex items-start space-x-4 p-6 rounded-2xl hover:bg-gray-50 transition-all">
+            <div class="flex-1">
+              <div class="flex items-center space-x-2 mb-3">
+                <span class="text-xs font-medium text-gray-500">科技</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs text-gray-400">36氪</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs text-gray-400">2小时前</span>
               </div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-                  <span class="font-medium text-gray-700">开发者</span>
-                  <span>·</span>
-                  <span>GitHub</span>
-                  <span>·</span>
-                  <span>5小时前</span>
-                </div>
-                <h2 class="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600">
-                  另一个示例文章标题
-                </h2>
-                <p class="text-sm text-gray-600 mb-3">
-                  开发者相关的新闻内容预览...
-                </p>
-                <div class="flex items-center space-x-4 text-xs text-gray-500">
-                  <button class="hover:text-gray-700">5 评论</button>
-                  <button class="hover:text-gray-700">分享</button>
-                  <button class="hover:text-gray-700">收藏</button>
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-
-        <!-- 侧边栏 -->
-        <div class="space-y-4">
-          <!-- 热门标签 -->
-          <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <h3 class="text-sm font-semibold text-gray-900 mb-3">热门标签</h3>
-            <div class="flex flex-wrap gap-2">
-              <span class="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded hover:bg-gray-200 cursor-pointer">人工智能</span>
-              <span class="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded hover:bg-gray-200 cursor-pointer">前端开发</span>
-              <span class="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded hover:bg-gray-200 cursor-pointer">机器学习</span>
-              <span class="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded hover:bg-gray-200 cursor-pointer">区块链</span>
-              <span class="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded hover:bg-gray-200 cursor-pointer">云计算</span>
-            </div>
-          </div>
-
-          <!-- 信息源 -->
-          <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <h3 class="text-sm font-semibold text-gray-900 mb-3">信息源</h3>
-            <div class="space-y-2 text-sm">
-              <div class="flex items-center justify-between py-1">
-                <span class="text-gray-700">36氪</span>
-                <span class="text-xs text-gray-500">科技</span>
-              </div>
-              <div class="flex items-center justify-between py-1">
-                <span class="text-gray-700">GitHub</span>
-                <span class="text-xs text-gray-500">开发者</span>
-              </div>
-              <div class="flex items-center justify-between py-1">
-                <span class="text-gray-700">Hacker News</span>
-                <span class="text-xs text-gray-500">开发者</span>
-              </div>
-              <div class="flex items-center justify-between py-1">
-                <span class="text-gray-700">arXiv</span>
-                <span class="text-xs text-gray-500">学术</span>
+              <h2 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-600 transition-colors">
+                示例文章标题 - 这里将显示聚合的高质量新闻
+              </h2>
+              <p class="text-gray-600 leading-relaxed mb-4">
+                这里是文章摘要的预览，展示文章的主要内容和关键信息，帮助用户快速了解文章内容...
+              </p>
+              <div class="flex items-center space-x-6 text-sm text-gray-400">
+                <span>42 阅读</span>
+                <span>12 评论</span>
               </div>
             </div>
           </div>
-        </div>
+        </article>
+
+        <!-- 文章卡片 2 -->
+        <article class="group cursor-pointer">
+          <div class="flex items-start space-x-4 p-6 rounded-2xl hover:bg-gray-50 transition-all">
+            <div class="flex-1">
+              <div class="flex items-center space-x-2 mb-3">
+                <span class="text-xs font-medium text-gray-500">开发者</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs text-gray-400">GitHub Trending</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs text-gray-400">5小时前</span>
+              </div>
+              <h2 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-600 transition-colors">
+                热门开源项目推荐
+              </h2>
+              <p class="text-gray-600 leading-relaxed mb-4">
+                最新的开源项目和技术趋势，帮助开发者了解前沿动态...
+              </p>
+              <div class="flex items-center space-x-6 text-sm text-gray-400">
+                <span>128 阅读</span>
+                <span>23 评论</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 文章卡片 3 -->
+        <article class="group cursor-pointer">
+          <div class="flex items-start space-x-4 p-6 rounded-2xl hover:bg-gray-50 transition-all">
+            <div class="flex-1">
+              <div class="flex items-center space-x-2 mb-3">
+                <span class="text-xs font-medium text-gray-500">学术</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs text-gray-400">arXiv</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs text-gray-400">1天前</span>
+              </div>
+              <h2 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-600 transition-colors">
+                最新研究论文精选
+              </h2>
+              <p class="text-gray-600 leading-relaxed mb-4">
+                人工智能和机器学习领域的最新研究成果...
+              </p>
+              <div class="flex items-center space-x-6 text-sm text-gray-400">
+                <span>89 阅读</span>
+                <span>7 评论</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- 加载更多 -->
+      <div class="text-center mt-16">
+        <button class="px-8 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors">
+          加载更多
+        </button>
       </div>
     </main>
   </div>
