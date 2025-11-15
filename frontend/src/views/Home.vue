@@ -5,7 +5,7 @@
       <div class="h-full max-w-screen-2xl mx-auto px-6 flex items-center justify-between">
         <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-2.5 transition-transform duration-200 hover:-translate-y-0.5">
-          <div class="w-6 h-6 bg-black"></div>
+          <img src="/logo.png" alt="Fast Info Logo" class="w-6 h-6 rounded-md">
           <span class="text-base font-medium text-black">Fast Info</span>
         </router-link>
 
