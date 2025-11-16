@@ -1,3 +1,68 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import { getArticles } from '@/api/article'
+
+// 状态管理
+const articles = ref([])
+const loading = ref(true)
+const error = ref(null)
+const currentCategory = ref('all')
+
+// 获取文章列表
+const fetchArticles = async (category = 'all') => {
+  loading.value = true
+  error.value = null
+
+  try {
+    const params = {
+      category: category === 'all' ? undefined : category,
+      sort: 'hot',
+      limit: 30
+    }
+
+    const response = await getArticles(params)
+
+    if (response.success) {
+      articles.value = response.data.articles
+    } else {
+      error.value = response.message || '获取文章失败'
+    }
+  } catch (err) {
+    console.error('Failed to fetch articles:', err)
+    error.value = '网络错误，请稍后重试'
+  } finally {
+    loading.value = false
+  }
+}
+
+// 切换分类
+const changeCategory = (category) => {
+  currentCategory.value = category
+  fetchArticles(category)
+}
+
+// 格式化时间
+const formatTime = (dateString) => {
+  if (!dateString) return ''
+
+  const now = new Date()
+  const date = new Date(dateString)
+  const diff = Math.floor((now - date) / 1000) // 秒
+
+  if (diff < 60) return '刚刚'
+  if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`
+  if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`
+  if (diff < 604800) return `${Math.floor(diff / 86400)}天前`
+
+  return date.toLocaleDateString('zh-CN')
+}
+
+// 组件挂载时获取文章
+onMounted(() => {
+  fetchArticles()
+})
+</script>
+
 <template>
   <div class="min-h-screen bg-white">
     <!-- 固定顶部横幅 - 48px -->
@@ -14,10 +79,11 @@
           <router-link to="/" class="nav-link">首页</router-link>
           <router-link to="/tech" class="nav-link">科技</router-link>
           <router-link to="/dev" class="nav-link">开发者</router-link>
+          <router-link to="/opensource" class="nav-link">开源</router-link>
           <router-link to="/academic" class="nav-link">学术</router-link>
+          <router-link to="/product" class="nav-link">产品</router-link>
         </nav>
 
-        <!-- 右侧操作 -->
         <button class="px-3 py-1.5 text-sm font-medium text-black transition-transform duration-200 hover:-translate-y-0.5">
           登录
         </button>
@@ -40,123 +106,98 @@
         <!-- 分类导航 -->
         <div class="border-b border-gray-200 mb-12">
           <div class="flex items-center space-x-8">
-            <button class="nav-tab active">全部</button>
-            <button class="nav-tab">科技</button>
-            <button class="nav-tab">开发者</button>
-            <button class="nav-tab">学术</button>
+            <button
+              @click="changeCategory('all')"
+              :class="['nav-tab', { active: currentCategory === 'all' }]"
+            >
+              全部
+            </button>
+            <button
+              @click="changeCategory('tech')"
+              :class="['nav-tab', { active: currentCategory === 'tech' }]"
+            >
+              科技
+            </button>
+            <button
+              @click="changeCategory('dev')"
+              :class="['nav-tab', { active: currentCategory === 'dev' }]"
+            >
+              开发者
+            </button>
+            <button
+              @click="changeCategory('opensource')"
+              :class="['nav-tab', { active: currentCategory === 'opensource' }]"
+            >
+              开源
+            </button>
+            <button
+              @click="changeCategory('academic')"
+              :class="['nav-tab', { active: currentCategory === 'academic' }]"
+            >
+              学术
+            </button>
+            <button
+              @click="changeCategory('product')"
+              :class="['nav-tab', { active: currentCategory === 'product' }]"
+            >
+              产品
+            </button>
           </div>
         </div>
 
+        <!-- 加载状态 -->
+        <div v-if="loading" class="text-center py-20">
+          <div class="text-gray-400">加载中...</div>
+        </div>
+
+        <!-- 错误状态 -->
+        <div v-else-if="error" class="text-center py-20">
+          <div class="text-red-500">{{ error }}</div>
+          <button
+            @click="fetchArticles(currentCategory)"
+            class="mt-4 px-4 py-2 text-sm text-gray-600 hover:text-black transition-colors"
+          >
+            重试
+          </button>
+        </div>
+
         <!-- 文章网格 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-          <!-- 文章卡片 1 -->
-          <article class="article-card">
+        <div v-else-if="articles.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+          <a
+            v-for="article in articles"
+            :key="article.id"
+            :href="article.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="article-card"
+          >
             <div class="mb-3">
-              <span class="text-xs text-gray-500">科技 · 36氪</span>
+              <span class="text-xs font-medium text-gray-500">{{ article.source }}</span>
+              <span class="mx-2 text-gray-300">·</span>
+              <span class="text-xs text-gray-400">{{ formatTime(article.published_at) }}</span>
             </div>
-            <h2 class="article-title mb-3">
-              示例文章标题 - 这里将显示聚合的高质量新闻内容
-            </h2>
-            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-              这里是文章摘要的预览，展示文章的主要内容和关键信息
+            <h3 class="text-lg font-medium text-black mb-2 leading-snug">
+              {{ article.title }}
+            </h3>
+            <p v-if="article.summary" class="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-2">
+              {{ article.summary }}
             </p>
-            <div class="text-xs text-gray-400">
-              2小时前
+            <div class="flex items-center space-x-4 text-xs text-gray-500">
+              <span v-if="article.likes > 0">{{ article.likes }} 赞</span>
+              <span v-if="article.comments > 0">{{ article.comments }} 评论</span>
+              <span v-if="article.quality_score" class="ml-auto text-gray-400">质量分: {{ article.quality_score }}</span>
             </div>
-          </article>
+          </a>
+        </div>
 
-          <!-- 文章卡片 2 -->
-          <article class="article-card">
-            <div class="mb-3">
-              <span class="text-xs text-gray-500">开发者 · GitHub</span>
-            </div>
-            <h2 class="article-title mb-3">
-              热门开源项目推荐
-            </h2>
-            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-              最新的开源项目和技术趋势，帮助开发者了解前沿动态
-            </p>
-            <div class="text-xs text-gray-400">
-              5小时前
-            </div>
-          </article>
-
-          <!-- 文章卡片 3 -->
-          <article class="article-card">
-            <div class="mb-3">
-              <span class="text-xs text-gray-500">学术 · arXiv</span>
-            </div>
-            <h2 class="article-title mb-3">
-              最新研究论文精选
-            </h2>
-            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-              人工智能和机器学习领域的最新研究成果
-            </p>
-            <div class="text-xs text-gray-400">
-              1天前
-            </div>
-          </article>
-
-          <!-- 文章卡片 4 -->
-          <article class="article-card">
-            <div class="mb-3">
-              <span class="text-xs text-gray-500">科技 · 少数派</span>
-            </div>
-            <h2 class="article-title mb-3">
-              数字生活方式探讨
-            </h2>
-            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-              探索更好的数字工具和生活方式
-            </p>
-            <div class="text-xs text-gray-400">
-              3小时前
-            </div>
-          </article>
-
-          <!-- 文章卡片 5 -->
-          <article class="article-card">
-            <div class="mb-3">
-              <span class="text-xs text-gray-500">开发者 · Hacker News</span>
-            </div>
-            <h2 class="article-title mb-3">
-              技术社区热门讨论
-            </h2>
-            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-              开发者社区的最新话题和技术讨论
-            </p>
-            <div class="text-xs text-gray-400">
-              6小时前
-            </div>
-          </article>
-
-          <!-- 文章卡片 6 -->
-          <article class="article-card">
-            <div class="mb-3">
-              <span class="text-xs text-gray-500">开发者 · Dev.to</span>
-            </div>
-            <h2 class="article-title mb-3">
-              前端开发最佳实践
-            </h2>
-            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-              分享前端开发的技巧和经验
-            </p>
-            <div class="text-xs text-gray-400">
-              8小时前
-            </div>
-          </article>
+        <!-- 空状态 -->
+        <div v-else class="text-center py-20">
+          <div class="text-gray-400">暂无文章</div>
         </div>
       </div>
     </main>
   </div>
 </template>
-
-<script setup>
-import { onMounted } from 'vue'
-
-onMounted(() => {
-  console.log('Fast Info 启动成功')
-})
-</script>
 
 <style scoped>
 /* 导航链接 */
@@ -192,14 +233,6 @@ onMounted(() => {
 
 .article-card:hover {
   @apply transform -translate-y-1;
-}
-
-.article-title {
-  @apply text-base font-medium text-black leading-snug transition-colors duration-200;
-}
-
-.article-card:hover .article-title {
-  @apply text-gray-600;
 }
 
 /* 文本截断 */

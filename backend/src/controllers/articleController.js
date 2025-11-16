@@ -20,10 +20,10 @@ exports.getArticles = async (req, res) => {
     } = req.query
 
     // 验证分类
-    if (category && category !== 'all' && !['tech', 'dev', 'academic'].includes(category)) {
+    if (category && category !== 'all' && !['tech', 'dev', 'opensource', 'academic', 'product'].includes(category)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid category. Must be: tech, dev, academic, or all'
+        message: 'Invalid category. Must be: tech, dev, opensource, academic, product, or all'
       })
     }
 

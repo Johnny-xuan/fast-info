@@ -24,8 +24,8 @@
 
 ### 短期目标（当前阶段）
 1. 完成前后端基础框架搭建 ✅
-2. 实现 8-10 个数据源的爬虫 🔄
-3. 完成基础的数据展示页面
+2. 实现 6 个数据源的爬虫 ✅
+3. 完成基础的数据展示页面 🔄
 4. 部署到免费平台
 
 ### 核心功能
@@ -36,8 +36,8 @@
 - 收藏和稍后阅读（二期）
 
 ### 技术栈
-- **前端**：Vue 3 + Vite + TailwindCSS + Naive UI
-- **后端**：Node.js + Express + MongoDB
+- **前端**：Vue 3 + Vite + TailwindCSS + Naive UI + Geist 字体
+- **后端**：Node.js + Express + Supabase (PostgreSQL)
 - **部署**：Vercel (前端) + Railway/Render (后端)
 
 ---
@@ -78,58 +78,106 @@
 
 ### 已完成 ✅
 
+**Week 1 完成（2025-11-15 ~ 2025-11-16）**
+
 **文档部分**
 - [x] 项目策划书（PROJECT_PLAN.md）
 - [x] 开发工作流（WORKFLOW.md）
 - [x] 项目说明（README.md）
+- [x] AI 助手工作指南（AI_GUIDE.md）
 - [x] Git 仓库初始化
 
-**前端部分**
+**前端部分（完整）**
 - [x] Vue 3 + Vite 项目创建
-- [x] 依赖安装（Vue Router, Pinia, Axios, TailwindCSS, Naive UI）
+- [x] 依赖安装（Vue Router, Pinia, Axios, TailwindCSS v3, Naive UI, Geist）
 - [x] 目录结构创建
 - [x] 路由配置（5 个页面）
-- [x] API 请求封装
+- [x] API 请求封装（axios 拦截器）
 - [x] Pinia store 配置
 - [x] 基础页面创建（Home, Tech, Dev, Academic, Search）
-- [x] TailwindCSS 配置
+- [x] Figma 极简风格设计（48px 固定顶栏 + transform 效果）
+- [x] TailwindCSS 配置（降级到 v3 解决兼容性）
 - [x] 环境变量配置
+- [x] 集成项目 Logo（黑底白色波浪线）
+- [x] 配置专业字体系统（Geist + Noto Sans SC）
+- [x] 实现数据展示（从后端 API 获取真实数据）
+- [x] 实现分类切换（全部/科技/开发者/开源/学术/产品）
+- [x] 加载状态、错误处理、空状态
 
-**后端部分**
+**后端部分（完整）**
 - [x] Node.js + Express 项目初始化
-- [x] 依赖安装（Express, Mongoose, Axios, Cheerio 等）
+- [x] 依赖安装（Express, Supabase, Axios, Cheerio, Puppeteer, node-cron 等）
 - [x] 目录结构创建
 - [x] 环境变量配置
-- [ ] server.js 入口文件（待完成）
-- [ ] 数据库连接配置（待完成）
-- [ ] 数据模型定义（待完成）
+- [x] server.js 入口文件（RESTful API）
+- [x] Supabase 客户端配置（anon key + service_role key）
+- [x] 服务层架构（Controllers → Services → Supabase）
+- [x] Article Service 完整实现（CRUD + 搜索 + 分页）
+- [x] Article Controller 完整实现（参数验证）
+- [x] RESTful 路由（/api/articles）
+- [x] CORS 配置
 
-**数据库**
-- [ ] MongoDB 集群创建（待完成）
-- [ ] 数据模型设计（待完成）
+**数据库（Supabase PostgreSQL）**
+- [x] Supabase 项目创建
+- [x] articles 表完整 schema 设计
+- [x] 行级安全策略（RLS）配置
+- [x] 性能优化索引（分类、来源、时间等）
+- [x] 自动更新 updated_at 触发器
+- [x] 全文搜索索引
+- [x] 数据约束（5 个分类 + 6 个来源）
+- [x] Supabase MCP 配置
 
-**爬虫**
-- [ ] 未开始
+**爬虫系统（6 个数据源全部完成）**
+- [x] 基础爬虫类（fetch → transform → clean → score → save）
+- [x] 质量评分算法（0-100 分）
+- [x] 热度评分算法（时间衰减）
+- [x] 自动分类系统（tech/dev/opensource/academic/product）
+- [x] **Hacker News 爬虫**（官方 API）- 每 2 小时
+- [x] **GitHub Trending 爬虫**（Cheerio HTML 解析）- 每 4 小时
+- [x] **Dev.to 爬虫**（官方 API）- 每 2 小时
+- [x] **arXiv 爬虫**（XML API，cs.AI 分类）- 每 6 小时
+- [x] **AIBase 爬虫**（Puppeteer JavaScript 渲染）- 每 4 小时
+- [x] **Product Hunt 爬虫**（GraphQL API + OAuth）- 每 3 小时
+- [x] 调度器系统（node-cron 定时任务）
+- [x] 数据清理系统（48 小时自动清理）
+
+**当前数据统计（2025-11-16）**
+- 数据库总文章数：132 条
+- 5 个分类：tech, dev, opensource, academic, product
+- 6 个数据源全部稳定运行
+- 调度器和清理系统正常运行
 
 ### 下一步任务 📝
 
+**Week 2 重点（当前阶段）**
+
 根据 WORKFLOW.md，下一步应该做：
 
-1. **完成后端基础框架**（Day 3-4）
-   - 创建 server.js 入口文件
-   - 配置数据库连接
-   - 创建数据模型（Article, User, UserSave）
-   - 创建基础 API 路由
+1. **完善前端功能**
+   - 添加 Product 分类页面
+   - 优化各分类页面样式
+   - 实现搜索功能
+   - 实现分页功能
+   - 响应式设计优化
+   - 用户体验改进
 
-2. **开发爬虫模块**（Day 4-7）
-   - GitHub Trending
-   - Hacker News API
-   - Dev.to API
+2. **可选：添加更多数据源**
    - 掘金 API
    - V2EX API
    - 少数派 RSS
    - IT之家 RSS
-   - arXiv API
+   - （根据需要决定）
+
+3. **性能优化**
+   - 图片懒加载
+   - 缓存优化
+   - API 响应速度优化
+
+4. **准备部署**
+   - 前端部署到 Vercel
+   - 后端部署到 Railway/Render
+   - 配置定时任务
+   - 域名配置
 
 ---
 
@@ -225,11 +273,13 @@ AI: 接下来需要配置 MongoDB 数据库。我建议使用 MongoDB Atlas 的�
 - ✅ 生态丰富
 - ✅ 部署简单
 
-**数据库：MongoDB**
-- ✅ 文档型数据库，适合存储文章
-- ✅ Schema 灵活，便于迭代
-- ✅ MongoDB Atlas 有免费版（512MB）
-- ✅ 与 Node.js 配合好（Mongoose）
+**数据库：Supabase (PostgreSQL)**
+- ✅ 开源、免费版额度充足
+- ✅ 基于 PostgreSQL，性能优秀
+- ✅ 内置行级安全（RLS）
+- ✅ 支持全文搜索
+- ✅ 提供 RESTful API 和实时订阅
+- ✅ MCP 工具支持，便于数据库操作
 
 ### 成本控制原则
 
@@ -443,8 +493,8 @@ Fast Info/
 
 ---
 
-**最后更新**：2025-11-15
-**文档版本**：v1.0
+**最后更新**：2025-11-16
+**文档版本**：v1.1
 **维护者**：Claude Code
 
 ---

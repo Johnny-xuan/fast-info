@@ -11,43 +11,48 @@
 ## 📊 总体进度
 
 ```
-项目进度: ▰▰▱▱▱▱▱▱▱▱ 20%
+项目进度: ▰▰▰▰▰▰▱▱▱▱ 60%
 
-Week 1: ▰▰▱▱▱▱▱ 2/7
-Week 2: ▱▱▱▱▱▱▱ 0/7
+Week 1: ▰▰▰▰▰▰▰ 7/7 ✅
+Week 2: ▰▰▱▱▱▱▱ 2/7
 Week 3: ▱▱▱▱▱▱▱ 0/7
 Week 4: ▱▱▱▱▱▱▱ 0/7
 ```
 
-**当前阶段**：Week 1 - 项目搭建
-**下一里程碑**：完成后端框架搭建和首个爬虫
-**最后更新**：2025-11-15
+**当前阶段**：Week 1 完成 → Week 2 开始
+**下一里程碑**：完善前端功能和用户体验
+**最后更新**：2025-11-16
 
 ---
 
 ## 🗓️ 开发里程碑
 
-### Week 1：项目搭建 (2025-11-15 ~ 2025-11-22)
+### Week 1：项目搭建 (2025-11-15 ~ 2025-11-22) ✅
 
 **目标**：完成开发环境搭建和基础框架
 
 **关键成果**：
 - ✅ 项目策划书和工作流文档
-- ✅ 前端项目框架搭建完成（Vue 3 + Vite + TailwindCSS）
-- 🔄 后端项目框架搭建中（已初始化，待完成 API）
-- ⬜ 数据库设计完成
-- ⬜ 至少 2 个数据源爬虫可用
-- ⬜ 基础页面可以展示
+- ✅ 前端项目框架搭建完成（Vue 3 + Vite + TailwindCSS + Geist 字体）
+- ✅ 后端项目框架搭建完成（Express + Supabase）
+- ✅ 数据库设计完成（Supabase PostgreSQL + RLS + 索引优化）
+- ✅ **6 个数据源全部完成**（Hacker News, GitHub Trending, Dev.to, arXiv, AIBase, Product Hunt）
+- ✅ 基础页面可以展示真实数据（5 个分类）
+- ✅ 自动分类系统（tech/dev/opensource/academic/product）
+- ✅ 调度器系统（定时自动抓取）
+- ✅ 数据清理系统（48小时自动清理）
 
-### Week 2：核心功能 (2025-11-23 ~ 2025-11-30)
+### Week 2：核心功能 (2025-11-23 ~ 2025-11-30) 🔄
 
 **目标**：实现数据采集和展示
 
 **关键成果**：
-- ⬜ 8-10 个数据源稳定运行
-- ⬜ 后端 API 全部完成
-- ⬜ 前端三个主要页面完成
-- ⬜ 数据能正常展示
+- ✅ 6 个数据源稳定运行（超额完成）
+- ✅ 后端 API 基本完成
+- ⬜ 前端所有分类页面完善
+- ✅ 数据能正常展示
+- ⬜ 搜索功能实现
+- ⬜ 响应式设计优化
 
 ### Week 3：功能完善 (2025-12-01 ~ 2025-12-08)
 
@@ -795,6 +800,144 @@ Week 4: ▱▱▱▱▱▱▱ 0/7
 - 配置数据库连接（需要先注册 MongoDB Atlas）
 - 创建 Article 数据模型
 - 创建基础 API 路由
+
+---
+
+### 2025-11-16（Week 1, Day 2）
+
+**今日完成**：
+- ✅ 数据库搭建（Supabase 替代 MongoDB）
+  - 创建 articles 表完整 schema
+  - 配置 RLS 行级安全策略
+  - 添加性能优化索引（分类、来源、时间等）
+  - 配置自动更新 updated_at 触发器
+  - 启用全文搜索索引
+- ✅ 后端 API 框架完成
+  - 创建 Supabase 客户端配置（anon key + service_role key）
+  - 实现服务层架构（controllers → services → Supabase）
+  - 完成 Article Service 全部 CRUD 方法
+  - 完成 Article Controller 及参数验证
+  - 创建 RESTful 路由（/api/articles）
+  - 测试所有 API 端点正常运行
+- ✅ 爬虫系统开发（4 个数据源）
+  - 创建基础爬虫类（统一流程：fetch → transform → clean → score → save）
+  - 实现质量评分算法（0-100 分，基于来源、标题、互动数据）
+  - 实现热度评分算法（时间衰减，类似 Hacker News）
+  - 实现自动分类系统（tech/dev/opensource/academic）
+  - 开发 Hacker News 爬虫（官方 API）
+  - 开发 GitHub Trending 爬虫（HTML 解析）
+  - 开发 Dev.to 爬虫（官方 API）
+  - 开发 arXiv 爬虫（XML API，cs.AI 分类）
+  - 创建调度系统（node-cron）
+  - 配置定时任务（每 2-6 小时自动运行）
+- ✅ 新增 'opensource' 分类
+  - 数据库迁移添加 opensource 到 category 约束
+  - 更新分类器支持开源项目关键词识别
+  - 更新后端 API 验证逻辑
+  - 更新前端导航和分类标签（4 个分类）
+  - 将 GitHub Trending 文章迁移到 opensource 分类
+- ✅ 配置 Supabase MCP
+  - 创建项目级 .mcp.json 配置文件
+  - 测试 MCP 工具连接
+  - 通过 MCP 执行数据库迁移
+- ✅ 前端数据集成
+  - 配置 Vite 路径别名（@）
+  - 更新 Home.vue 从后端 API 获取真实数据
+  - 实现加载状态、错误处理、空状态
+  - 实现分类切换功能（全部/科技/开发者/开源/学术）
+  - 显示文章来源、发布时间、质量分、互动数据
+  - 格式化相对时间显示
+
+**数据统计**：
+- 数据库文章总数：40 条
+  - opensource: 10 条（GitHub Trending）
+  - dev: 17 条（Dev.to 等）
+  - tech: 12 条（Hacker News 等）
+  - academic: 1 条（arXiv）
+- 4 个爬虫全部测试通过，插入成功率 100%
+
+**今日问题及解决**：
+- ✅ 爬虫 RLS 权限问题 → 使用 service_role key 绕过 RLS
+- ✅ 后端服务器停止运行 → 重启 nodemon 恢复
+- ✅ 前端路径别名未配置 → 添加 Vite resolve.alias 解决
+- ✅ TailwindCSS v4 兼容性问题 → 已在 Day 1 降级到 v3
+
+**明日计划**：
+- 添加更多中文数据源爬虫（掘金、V2EX、少数派、IT之家）
+- 完善前端各分类页面（Tech.vue, Dev.vue, Academic.vue）
+- 实现分页功能
+- 优化前端样式细节
+
+---
+
+### 2025-11-16（Week 1, Day 3）
+
+**今日完成**：
+- ✅ 新增第 5 个数据源：AIBase（AI 产品聚合平台）
+  - 使用 Puppeteer 处理 JavaScript 渲染网站
+  - 实现完整的数据提取和转换
+  - 爬取 AI 工具和产品信息
+  - 自动分类到 'product' 类别
+  - 配置每 4 小时运行一次
+- ✅ 新增第 6 个数据源：Product Hunt（每日产品推荐）
+  - 集成 Product Hunt GraphQL API v2
+  - 实现 OAuth Client Credentials 认证流程
+  - 动态获取 access token
+  - 爬取每日热门产品（按投票数排序）
+  - 提取产品信息、制作者、主题标签
+  - 配置每 3 小时运行一次
+  - 自动分类到 'product' 类别
+- ✅ 新增 'product' 分类
+  - 数据库迁移添加 product 到 category 约束
+  - 更新分类器支持产品关键词识别
+  - 更新后端 API 验证逻辑
+  - 所有 6 个爬虫全部集成到调度器
+- ✅ 数据库更新
+  - 添加 'AIBase' 和 'Product Hunt' 到 source 约束
+  - 添加 'product' 到 category 约束
+
+**数据统计**：
+- 数据库文章总数：**132 条**
+  - dev: 48 条（5 个来源）
+  - tech: 41 条（6 个来源）
+  - opensource: 24 条（5 个来源）
+  - **product: 15 条（2 个来源：AIBase, Product Hunt）**
+  - academic: 4 条（2 个来源）
+- **6 个数据源全部运行正常**：
+  - Hacker News（API）- 每 2 小时
+  - GitHub Trending（HTML）- 每 4 小时
+  - Dev.to（API）- 每 2 小时
+  - arXiv（XML API）- 每 6 小时
+  - AIBase（Puppeteer）- 每 4 小时
+  - Product Hunt（GraphQL API）- 每 3 小时
+- 调度器稳定运行，自动抓取和清理系统正常
+
+**今日问题及解决**：
+- ✅ Product Hunt 认证失败（401 错误）
+  - 原因：Developer Token 不能直接使用
+  - 解决：改用 OAuth Client Credentials 流程，动态获取 access token
+- ✅ GraphQL 查询结构错误
+  - 原因：`makers` 字段结构判断错误（不需要 edges 包装）
+  - 解决：修正查询结构为 `makers { name }`
+- ✅ AIBase 数据提取问题
+  - 原因：网站使用 JavaScript 渲染
+  - 解决：使用 Puppeteer 替代 Cheerio
+
+**技术要点**：
+- **API 类型总结**：
+  - 官方 REST API：Hacker News, Dev.to
+  - GraphQL API：Product Hunt
+  - XML API：arXiv
+  - HTML 解析：GitHub Trending（Cheerio）
+  - JavaScript 渲染：AIBase（Puppeteer）
+- OAuth 2.0 Client Credentials 认证流程实现
+- Puppeteer 无头浏览器爬虫技术
+
+**明日计划**：
+- 完善前端各分类页面（添加 Product 分类页面）
+- 优化前端样式和用户体验
+- 实现搜索功能
+- 考虑添加更多数据源（可选）
 
 ---
 
