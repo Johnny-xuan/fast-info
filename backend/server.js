@@ -1,7 +1,6 @@
 const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
-const { connectDatabase } = require('./src/config/database')
 
 // 加载环境变量
 dotenv.config()
@@ -9,8 +8,8 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3000
 
-// 连接数据库
-connectDatabase()
+// 初始化 Supabase 客户端（通过引入配置文件自动初始化）
+require('./src/config/supabase')
 
 // 中间件
 app.use(cors())

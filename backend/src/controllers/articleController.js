@@ -1,4 +1,4 @@
-const Article = require('../models/Article')
+const articleService = require('../services/articleService')
 
 /**
  * 文章控制器
@@ -13,61 +13,37 @@ exports.getArticles = async (req, res) => {
   try {
     const {
       category = 'all',
-      sort = 'latest', // hot | latest
+      sort = 'latest',
       page = 1,
       limit = 20,
       source
     } = req.query
 
-    // 构建查询条件
-    const query = { isPublished: true }
-
-    if (category && category !== 'all') {
-      if (!['tech', 'dev', 'academic'].includes(category)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid category'
-        })
-      }
-      query.category = category
+    // 验证分类
+    if (category && category !== 'all' && !['tech', 'dev', 'academic'].includes(category)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid category. Must be: tech, dev, academic, or all'
+      })
     }
 
-    if (source) {
-      query.source = source
-    }
-
-    // 排序选项
-    let sortOption = {}
-    if (sort === 'hot') {
-      sortOption = { hotScore: -1, createdAt: -1 }
-    } else {
-      sortOption = { publishedAt: -1, createdAt: -1 }
-    }
-
-    // 分页
-    const skip = (parseInt(page) - 1) * parseInt(limit)
-    const limitNum = parseInt(limit)
-
-    // 执行查询
-    const [articles, total] = await Promise.all([
-      Article.find(query)
-        .sort(sortOption)
-        .skip(skip)
-        .limit(limitNum)
-        .select('-metadata')
-        .lean(),
-      Article.countDocuments(query)
-    ])
+    const result = await articleService.getArticles({
+      category,
+      sort,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      source
+    })
 
     res.json({
       success: true,
       data: {
-        articles,
+        articles: result.articles,
         pagination: {
-          page: parseInt(page),
-          limit: limitNum,
-          total,
-          totalPages: Math.ceil(total / limitNum)
+          page: result.page,
+          limit: result.limit,
+          total: result.total,
+          totalPages: result.totalPages
         }
       }
     })
@@ -90,7 +66,7 @@ exports.getArticleById = async (req, res) => {
   try {
     const { id } = req.params
 
-    const article = await Article.findById(id).lean()
+    const article = await articleService.getArticleById(id)
 
     if (!article) {
       return res.status(404).json({
@@ -122,7 +98,7 @@ exports.getHotArticles = async (req, res) => {
   try {
     const { category = 'all', limit = 10 } = req.query
 
-    const articles = await Article.getHotArticles(
+    const articles = await articleService.getHotArticles(
       category !== 'all' ? category : null,
       parseInt(limit)
     )
@@ -158,48 +134,26 @@ exports.searchArticles = async (req, res) => {
     if (!q) {
       return res.status(400).json({
         success: false,
-        message: 'Search query is required'
+        message: 'Search query (q) is required'
       })
     }
 
-    // 构建查询条件
-    const query = {
-      isPublished: true,
-      $or: [
-        { title: { $regex: q, $options: 'i' } },
-        { summary: { $regex: q, $options: 'i' } },
-        { tags: { $in: [new RegExp(q, 'i')] } }
-      ]
-    }
-
-    if (category && category !== 'all') {
-      query.category = category
-    }
-
-    // 分页
-    const skip = (parseInt(page) - 1) * parseInt(limit)
-    const limitNum = parseInt(limit)
-
-    // 执行查询
-    const [articles, total] = await Promise.all([
-      Article.find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limitNum)
-        .select('-metadata')
-        .lean(),
-      Article.countDocuments(query)
-    ])
+    const result = await articleService.searchArticles({
+      q,
+      category,
+      page: parseInt(page),
+      limit: parseInt(limit)
+    })
 
     res.json({
       success: true,
       data: {
-        articles,
+        articles: result.articles,
         pagination: {
-          page: parseInt(page),
-          limit: limitNum,
-          total,
-          totalPages: Math.ceil(total / limitNum)
+          page: result.page,
+          limit: result.limit,
+          total: result.total,
+          totalPages: result.totalPages
         }
       }
     })
@@ -220,17 +174,7 @@ exports.searchArticles = async (req, res) => {
  */
 exports.getSourceStats = async (req, res) => {
   try {
-    const stats = await Article.aggregate([
-      { $match: { isPublished: true } },
-      {
-        $group: {
-          _id: '$source',
-          count: { $sum: 1 },
-          latestArticle: { $max: '$publishedAt' }
-        }
-      },
-      { $sort: { count: -1 } }
-    ])
+    const stats = await articleService.getSourceStats()
 
     res.json({
       success: true,
@@ -253,17 +197,7 @@ exports.getSourceStats = async (req, res) => {
  */
 exports.getCategoryStats = async (req, res) => {
   try {
-    const stats = await Article.aggregate([
-      { $match: { isPublished: true } },
-      {
-        $group: {
-          _id: '$category',
-          count: { $sum: 1 },
-          latestArticle: { $max: '$publishedAt' }
-        }
-      },
-      { $sort: { count: -1 } }
-    ])
+    const stats = await articleService.getCategoryStats()
 
     res.json({
       success: true,

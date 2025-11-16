@@ -13,13 +13,13 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@supabase/supabase-js": "^2.81.1",
     "axios": "^1.13.2",
     "cheerio": "^1.1.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "joi": "^18.0.1",
-    "mongoose": "^8.19.4",
     "node-cron": "^4.2.1",
     "winston": "^3.18.3",
     "xml2js": "^0.6.2"
