@@ -231,7 +231,7 @@ onMounted(() => {
                 class="ai-summary-content"
               >
                 <div class="ai-summary-header">
-                  <span class="ai-icon">🤖</span>
+                  <span class="doubao-logo">豆包</span>
                   <span class="ai-title">AI 技术分析</span>
                 </div>
                 <p class="ai-summary-text">
@@ -400,14 +400,18 @@ onMounted(() => {
   @apply flex items-center gap-2 mb-3 pb-2 border-b border-purple-200/50;
 }
 
-.ai-icon {
-  @apply text-lg;
+.doubao-logo {
+  @apply inline-flex items-center justify-center text-xs font-bold text-white
+         w-10 h-6 rounded-md;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   animation: float 3s ease-in-out infinite;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  letter-spacing: 0.05em;
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
+  50% { transform: translateY(-3px); }
 }
 
 .ai-title {
