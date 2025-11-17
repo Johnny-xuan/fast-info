@@ -64,12 +64,6 @@ const toggleAISummary = (event, articleId) => {
   event.preventDefault() // 阻止链接跳转
   event.stopPropagation()
 
-  // 未来订阅检查
-  if (!isSubscribed.value) {
-    alert('订阅后即可查看 AI 深度分析 ✨')
-    return
-  }
-
   showAISummary.value[articleId] = !showAISummary.value[articleId]
 }
 
@@ -315,16 +309,16 @@ onMounted(() => {
 
 /* AI 按钮 - 灵动设计 */
 .ai-button {
-  @apply relative inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
-         text-sm font-medium text-white transition-all duration-300
+  @apply relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md
+         text-xs font-medium text-white transition-all duration-300
          overflow-hidden;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px 0 rgba(102, 126, 234, 0.25);
 }
 
 .ai-button:hover {
   @apply transform -translate-y-0.5;
-  box-shadow: 0 6px 20px 0 rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px 0 rgba(102, 126, 234, 0.35);
 }
 
 /* AI 按钮渐变动画 */
@@ -359,7 +353,7 @@ onMounted(() => {
 
 /* AI 按钮内容 */
 .ai-button-icon {
-  @apply relative z-10 text-base;
+  @apply relative z-10 text-sm;
   animation: sparkle 2s ease-in-out infinite;
 }
 
@@ -369,7 +363,7 @@ onMounted(() => {
     opacity: 1;
   }
   50% {
-    transform: scale(1.2) rotate(10deg);
+    transform: scale(1.15) rotate(8deg);
     opacity: 0.8;
   }
 }
@@ -379,7 +373,7 @@ onMounted(() => {
 }
 
 .ai-button-badge {
-  @apply relative z-10 px-1.5 py-0.5 text-xs font-bold rounded
+  @apply relative z-10 px-1 py-0 text-[10px] font-bold rounded
          bg-white/20 backdrop-blur-sm;
 }
 

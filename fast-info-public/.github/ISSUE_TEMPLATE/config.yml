@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 访问网站
+    url: https://your-domain.com
+    about: 访问 Fast Info 了解更多
+  - name: 📧 GitHub Issues
+    url: https://github.com/yourname/fast-info/issues
+    about: 查看所有问题和反馈

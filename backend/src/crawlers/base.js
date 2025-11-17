@@ -146,15 +146,22 @@ class BaseCrawler {
         }
 
         // 插入新文章
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('articles')
           .insert([article])
+          .select()
 
         if (error) {
           this.logger.error(`Failed to insert article: ${article.url}`, error)
           errors++
         } else {
           inserted++
+          // 如果有摘要，立即触发 AI 生成（异步，不阻塞）
+          if (data && data[0] && data[0].summary && data[0].summary.length >= 20) {
+            this.triggerAIGeneration(data[0]).catch(err => {
+              this.logger.warn(`AI generation failed for ${article.url}:`, err.message)
+            })
+          }
         }
 
       } catch (error) {
@@ -164,6 +171,22 @@ class BaseCrawler {
     }
 
     return { inserted, skipped, errors }
+  }
+
+  /**
+   * 触发 AI 摘要生成（异步，不阻塞爬虫）
+   * @private
+   */
+  async triggerAIGeneration(article) {
+    try {
+      const autoAIService = require('../services/autoAIService')
+      this.logger.info(`🤖 Triggering AI for: ${article.title.substring(0, 50)}...`)
+      // 异步生成，延迟 1 秒避免 API 限流
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      await autoAIService.generateForNewArticle(article.id)
+    } catch (error) {
+      // 静默失败，不影响爬虫
+    }
   }
 
   /**
