@@ -40,6 +40,9 @@ app.get('/api', (req, res) => {
       articles: '/api/articles',
       articlesHot: '/api/articles/hot',
       articlesSearch: '/api/articles/search',
+      aiStats: '/api/ai/stats',
+      aiBatchGenerate: '/api/ai/batch-generate',
+      aiGenerateSummary: '/api/ai/generate-summary/:id',
       health: '/health'
     }
   })
@@ -48,6 +51,10 @@ app.get('/api', (req, res) => {
 // 挂载文章路由
 const articleRoutes = require('./src/routes/article')
 app.use('/api/articles', articleRoutes)
+
+// 挂载 AI 路由
+const aiRoutes = require('./src/routes/ai')
+app.use('/api/ai', aiRoutes)
 
 // 错误处理中间件
 app.use((err, req, res, next) => {
@@ -84,6 +91,10 @@ app.listen(PORT, () => {
 ║                                        ║
 ╚════════════════════════════════════════╝
   `)
+
+  // 启动自动 AI 摘要生成服务
+  const autoAIService = require('./src/services/autoAIService')
+  autoAIService.start()
 })
 
 // 优雅关闭
