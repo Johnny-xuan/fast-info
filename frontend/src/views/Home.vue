@@ -171,21 +171,38 @@ onMounted(() => {
             rel="noopener noreferrer"
             class="article-card"
           >
-            <div class="mb-3">
-              <span class="text-xs font-medium text-gray-500">{{ article.source }}</span>
-              <span class="mx-2 text-gray-300">·</span>
+            <!-- 来源标注 - 法律合规要求 -->
+            <div class="mb-3 flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="text-xs text-gray-400">来源：</span>
+                <span class="inline-flex items-center text-xs font-medium text-blue-600">
+                  {{ article.source }}
+                  <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </span>
+              </div>
               <span class="text-xs text-gray-400">{{ formatTime(article.published_at) }}</span>
             </div>
+
             <h3 class="text-lg font-medium text-black mb-2 leading-snug">
               {{ article.title }}
             </h3>
+
             <p v-if="article.summary" class="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-2">
               {{ article.summary }}
             </p>
+
             <div class="flex items-center space-x-4 text-xs text-gray-500">
               <span v-if="article.likes > 0">{{ article.likes }} 赞</span>
               <span v-if="article.comments > 0">{{ article.comments }} 评论</span>
               <span v-if="article.quality_score" class="ml-auto text-gray-400">质量分: {{ article.quality_score }}</span>
+            </div>
+
+            <!-- 版权提示 -->
+            <div class="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-400">
+              内容来自 {{ article.source }}，点击查看原文
             </div>
           </a>
         </div>

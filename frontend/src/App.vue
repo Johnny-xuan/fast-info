@@ -1,10 +1,13 @@
 <script setup>
-// App.vue - 应用主组件
+import Footer from './components/Footer.vue'
 </script>
 
 <template>
-  <div id="app" class="min-h-screen bg-gray-50">
-    <router-view />
+  <div id="app" class="min-h-screen bg-gray-50 flex flex-col">
+    <div class="flex-1">
+      <router-view />
+    </div>
+    <Footer />
   </div>
 </template>
 

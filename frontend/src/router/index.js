@@ -30,6 +30,31 @@ const routes = [
     name: 'Search',
     component: () => import('../views/Search.vue'),
     meta: { title: 'Fast Info - 搜索' }
+  },
+  // 法律合规页面
+  {
+    path: '/copyright',
+    name: 'Copyright',
+    component: () => import('../views/Copyright.vue'),
+    meta: { title: 'Fast Info - 版权声明' }
+  },
+  {
+    path: '/terms',
+    name: 'Terms',
+    component: () => import('../views/Terms.vue'),
+    meta: { title: 'Fast Info - 服务条款' }
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('../views/Privacy.vue'),
+    meta: { title: 'Fast Info - 隐私政策' }
+  },
+  {
+    path: '/dmca',
+    name: 'DMCA',
+    component: () => import('../views/DMCA.vue'),
+    meta: { title: 'Fast Info - DMCA 投诉' }
   }
 ]
 
