@@ -11,6 +11,8 @@ const DevToCrawler = require('./devto')
 const ArxivCrawler = require('./arxiv')
 const AIBaseCrawler = require('./aibase')
 const ProductHuntCrawler = require('./producthunt')
+const V2exCrawler = require('./v2ex')
+const JuejinCrawler = require('./juejin')
 const { runCleanup } = require('../utils/cleaner')
 
 /**
@@ -51,6 +53,18 @@ const crawlers = [
     name: 'Product Hunt',
     crawler: new ProductHuntCrawler({ limit: 30 }),
     schedule: '0 */3 * * *', // 每 3 小时运行一次（每日产品更新较频繁）
+    enabled: true
+  },
+  {
+    name: 'V2EX',
+    crawler: new V2exCrawler(),
+    schedule: '0 */2 * * *', // 每 2 小时运行一次（社区讨论更新频繁）
+    enabled: true
+  },
+  {
+    name: '掘金',
+    crawler: new JuejinCrawler(),
+    schedule: '0 */3 * * *', // 每 3 小时运行一次（技术文章更新较频繁）
     enabled: true
   }
 ]

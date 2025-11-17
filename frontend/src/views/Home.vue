@@ -416,8 +416,11 @@ onMounted(() => {
 }
 
 .ai-summary-text {
-  @apply text-sm text-gray-700 leading-relaxed mb-3;
+  @apply text-base text-gray-800 leading-loose mb-3;
   white-space: pre-line; /* 保留换行符，自动换行 */
+  font-weight: 400;
+  line-height: 1.8; /* 更大的行高，提升可读性 */
+  letter-spacing: 0.01em; /* 轻微字符间距 */
 }
 
 .ai-summary-footer {
