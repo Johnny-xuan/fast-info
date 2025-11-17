@@ -231,12 +231,12 @@ onMounted(() => {
                 class="ai-summary-content"
               >
                 <div class="ai-summary-header">
-                  <span class="doubao-logo">豆包</span>
+                  <img src="/doubao-logo.jpeg" alt="豆包" class="doubao-logo-img">
                   <span class="ai-title">AI 技术分析</span>
                 </div>
-                <p class="ai-summary-text">
+                <div class="ai-summary-text">
                   {{ article.ai_summary }}
-                </p>
+                </div>
                 <div class="ai-summary-footer">
                   由豆包大模型生成 • 仅供参考
                 </div>
@@ -400,13 +400,10 @@ onMounted(() => {
   @apply flex items-center gap-2 mb-3 pb-2 border-b border-purple-200/50;
 }
 
-.doubao-logo {
-  @apply inline-flex items-center justify-center text-xs font-bold text-white
-         w-10 h-6 rounded-md;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.doubao-logo-img {
+  @apply w-8 h-8 rounded-md object-contain;
   animation: float 3s ease-in-out infinite;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-  letter-spacing: 0.05em;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
 }
 
 @keyframes float {
@@ -420,6 +417,7 @@ onMounted(() => {
 
 .ai-summary-text {
   @apply text-sm text-gray-700 leading-relaxed mb-3;
+  white-space: pre-line; /* 保留换行符，自动换行 */
 }
 
 .ai-summary-footer {
