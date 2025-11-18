@@ -11,17 +11,18 @@
 ## 📊 总体进度
 
 ```
-项目进度: ▰▰▰▰▰▰▱▱▱▱ 60%
+项目进度: ▰▰▰▰▰▰▰▱▱▱ 70%
 
 Week 1: ▰▰▰▰▰▰▰ 7/7 ✅
-Week 2-3: ▱▱▱▱▱▱▱ 0/8 (AI功能 + 前端优化)
+Week 2: ▰▰▰▱▱▱▱ 3/8 (AI功能 + 前端优化) 🔄
+Week 3: ▱▱▱▱▱▱▱ 0/7 (功能完善)
 Week 4: ▱▱▱▱▱▱▱ 0/7 (测试部署)
 ```
 
-**当前阶段**：Week 1 完成 → Week 2 开始
+**当前阶段**：Week 2 进行中
 **产品定位**：技术情报分析平台（不是内容转载平台）
-**下一里程碑**：AI 智能分析功能 + 前端优化
-**最后更新**：2025-11-16
+**下一里程碑**：高级筛选 + 文章收藏 + 法律合规页面
+**最后更新**：2025-11-19 (Claude)
 
 **⚠️ 重要提醒**：本项目必须严格遵守中美法律法规，特别是版权法。详见下方"法律合规要求"。
 
@@ -90,16 +91,19 @@ Week 4: ▱▱▱▱▱▱▱ 0/7 (测试部署)
 - 优化前端展示和用户体验
 
 **关键成果**：
-- ⬜ **AI 智能分析功能**
-  - AI 概括性摘要（200-300字）
-  - AI 技术分析（原创内容）
-  - 趋势预测评分
-  - 热度分析可视化
-- ⬜ **前端页面完善**
-  - Product 分类页面
-  - 搜索功能
-  - 分页/无限滚动
-  - 响应式设计
+- ✅ **AI 智能分析功能**（基础完成）
+  - ✅ AI 自动摘要（豆包大模型，200-300字）
+  - ✅ autoAI 后台服务（每 60 秒自动生成）
+  - ✅ AI 摘要展示和交互（展开/收起）
+  - ⬜ AI 技术分析（原创内容）
+  - ⬜ 趋势预测评分
+  - ⬜ 热度分析可视化
+- 🔄 **前端页面完善**（部分完成）
+  - ⬜ Product 分类页面
+  - ✅ 搜索功能（全文搜索 + 分页）
+  - ✅ 分页功能（上一页/下一页）
+  - ⬜ 无限滚动
+  - ⬜ 响应式设计优化
 - ⬜ **法律合规**
   - 版权声明页面
   - 服务条款
@@ -393,26 +397,27 @@ Week 4: ▱▱▱▱▱▱▱ 0/7 (测试部署)
   - 验收：所有卡片都有清晰标注
 
 #### 4.1 AI 服务配置
-- [ ] **选择 AI 服务提供商**
-  - 状态：⬜ 未开始
-  - 选项：OpenAI API / Claude API / Deepseek
-  - 考虑：成本、效果、稳定性
-  - 验收：用户确认选择
+- [x] **选择 AI 服务提供商**
+  - 状态：✅ 已完成
+  - 选择：豆包（Doubao）大模型
+  - 原因：性价比高、中文效果好、稳定性强
+  - 验收：用户确认选择 ✓
 
-- [ ] **配置 AI API**
-  - 状态：⬜ 未开始
-  - 文件：`backend/src/config/ai.js`
-  - 环境变量：AI_API_KEY, AI_API_URL
-  - 验收：API 可正常调用
+- [x] **配置 AI API**
+  - 状态：✅ 已完成
+  - 文件：`backend/src/services/doubaoService.js`
+  - 环境变量：DOUBAO_API_KEY, DOUBAO_ENDPOINT_ID
+  - 验收：API 可正常调用 ✓
 
-- [ ] **创建 AI Service**
-  - 状态：⬜ 未开始
-  - 文件：`backend/src/services/aiService.js`
+- [x] **创建 AI Service**
+  - 状态：✅ 已完成
+  - 文件：`backend/src/services/doubaoService.js`, `backend/src/services/autoAIService.js`
   - 功能：
-    - generateSummary(article) - 生成摘要
-    - generateAnalysis(article) - 生成技术分析
-    - answerQuestion(article, question) - AI 问答
-  - 验收：所有方法测试通过
+    - ✅ generateSummary(article) - 生成摘要
+    - ✅ autoAI 后台服务（每 60 秒自动检查并生成）
+    - ⬜ generateAnalysis(article) - 生成技术分析
+    - ⬜ answerQuestion(article, question) - AI 问答
+  - 验收：摘要生成正常 ✓
 
 #### 4.2 AI 摘要功能
 - [ ] **设计 AI 提示词（Prompt）**
@@ -548,37 +553,49 @@ Week 4: ▱▱▱▱▱▱▱ 0/7 (测试部署)
   - 验收：可以跳转
 
 #### 5.2 搜索功能实现
-- [ ] **后端搜索 API**
-  - 状态：⬜ 未开始
-  - 路由：GET /api/articles/search?q=keyword
+- [x] **后端搜索 API**
+  - 状态：✅ 已完成 (2025-11-19)
+  - 路由：GET /api/articles/search?q=keyword&category=tech&page=1
   - 功能：
-    - 全文搜索（标题 + 摘要）
-    - 按相关度排序
-    - 分页支持
-  - 验收：搜索准确
+    - ✅ 全文搜索（标题 + 摘要，ilike 模式）
+    - ✅ 分类筛选支持
+    - ✅ 分页支持（page + limit）
+    - ✅ 按创建时间排序
+  - 验收：搜索准确 ✓（测试：AI 关键词返回 75 条结果）
 
-- [ ] **前端搜索页面**
-  - 状态：⬜ 未开始
-  - 文件：`frontend/src/views/Search.vue`
+- [x] **前端搜索页面**
+  - 状态：✅ 已完成 (2025-11-19)
+  - 文件：`frontend/src/views/Search.vue` (349 lines)
   - 功能：
-    - 搜索框
-    - 结果列表
-    - 关键词高亮
-    - 筛选器（分类、时间）
-  - 验收：搜索体验好
+    - ✅ 搜索框和提交
+    - ✅ 结果列表展示
+    - ✅ URL 参数支持（`/search?q=keyword`）
+    - ✅ AI 摘要展开/收起
+    - ✅ 分页控制
+    - ✅ 加载/错误/空状态
+    - ⬜ 关键词高亮（待优化）
+    - ⬜ 高级筛选器（时间、来源）（待开发）
+  - 验收：搜索体验良好 ✓
 
 #### 5.3 分页功能
+- [x] **基础分页实现**
+  - 状态：✅ 已完成 (2025-11-19)
+  - 方式：上一页/下一页按钮
+  - 位置：搜索结果页面底部
+  - 验收：分页正常 ✓
+
 - [ ] **无限滚动实现**
   - 状态：⬜ 未开始
   - 工具：Intersection Observer
   - 逻辑：滚动到底部自动加载
   - 验收：加载流畅
 
-- [ ] **加载状态优化**
-  - 状态：⬜ 未开始
-  - 骨架屏设计
-  - Loading 动画
-  - 验收：体验流畅
+- [x] **加载状态优化**
+  - 状态：✅ 基础完成 (2025-11-19)
+  - ✅ Loading 文字提示
+  - ✅ 错误状态提示
+  - ⬜ 骨架屏设计（待优化）
+  - 验收：基本体验流畅 ✓
 
 #### 5.4 响应式设计
 - [ ] **移动端适配**
@@ -1168,6 +1185,75 @@ Week 4: ▱▱▱▱▱▱▱ 0/7 (测试部署)
 - 完善前端各分类页面（Tech.vue, Dev.vue, Academic.vue）
 - 实现分页功能
 - 优化前端样式细节
+
+---
+
+### 2025-11-17（Week 1, Day 4）
+
+**今日完成**：
+- ✅ Node.js 环境修复
+  - 修复 Node.js v25.1.0 fetch bug（undici 严重 bug 导致 Supabase 调用失败）
+  - 降级到 Node.js v22.21.1（通过 Homebrew）
+  - 恢复 autoAI 服务正常运行
+  - 验证所有 API 正常工作
+- ✅ 搜索功能完整实现
+  - 后端搜索 API（`articleService.searchArticles`）
+    - 支持标题和摘要全文搜索（ilike 模式）
+    - 支持分类筛选
+    - 分页功能（page + limit）
+    - 按创建时间倒序排序
+  - 前端搜索页面（`Search.vue`，349 行）
+    - 搜索表单和提交
+    - URL 参数支持（`/search?q=keyword`）
+    - 搜索结果展示（文章卡片）
+    - AI 摘要展开/收起功能
+    - 分页控制（上一页/下一页）
+    - 加载/错误/空状态处理
+    - 结果统计显示
+  - 修复前端 API 调用（GET 方法，正确 URL）
+- ✅ 协作文档创建
+  - 创建 `PROJECT_RULES.md` 协作规则文档
+  - 为 qoder 和 Cline (GLM) 提供完整指南
+  - 内容包括：
+    - 项目概述和技术栈详解
+    - Git 工作流程（强调使用 Git 避免错误）
+    - 代码规范（JavaScript、Vue 3、CSS）
+    - 开发环境配置（Node.js v22 要求）
+    - 关键文件说明（逐个解释作用）
+    - 常见陷阱（Node.js v25 bug、API 不匹配等 6 个问题）
+    - 协作规则（职责分工、检查清单、禁止操作）
+    - 测试与部署指南
+
+**数据统计**：
+- 数据库文章总数：**233 条**（相比昨日 +101 条）
+- autoAI 服务正常运行，已为多篇文章生成 AI 摘要
+- 搜索功能测试：关键词 "AI" 返回 75 条结果
+
+**今日问题及解决**：
+- ✅ Node.js v25 fetch bug
+  - 症状：`TypeError: fetch failed at node:internal/deps/undici/undici:15845:13`
+  - 影响：所有 Supabase JS 客户端操作失败
+  - 测试：curl 成功 ✅、axios 成功 ✅、Supabase JS 失败 ❌
+  - 解决：`brew install node@22` → `brew unlink node` → `brew link node@22 --force`
+  - 结果：autoAI 服务恢复，API 全部正常
+- ✅ 前端 API 方法不匹配
+  - 问题：`searchArticles` 使用 POST，后端期望 GET
+  - 解决：修改 `frontend/src/api/article.js` 为 GET + params
+  - 结果：搜索功能正常工作
+
+**技术要点**：
+- Node.js v25.1.0 的 undici (内置 fetch) 存在严重 bug，必须使用 v22 LTS
+- Supabase ilike 操作符：PostgreSQL 大小写不敏感搜索
+- Vue 3 URL 参数监听：`watch(() => route.query.q)`
+- AI 摘要展示：使用响应式对象 `showAISummary` 控制展开/收起
+
+**明日计划**：
+- 继续方案二（功能扩展）：
+  - 添加高级筛选功能（时间范围、来源、分类组合）
+  - 实现文章收藏功能
+  - 创建法律合规页面（版权声明、服务条款等）
+- 优化搜索体验（关键词高亮、搜索建议）
+- 完善 Product 分类页面
 
 ---
 
