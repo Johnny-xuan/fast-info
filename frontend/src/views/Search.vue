@@ -170,30 +170,18 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-white">
-    <!-- 固定顶部横幅 -->
-    <header class="fixed top-0 left-0 right-0 z-50 h-12 bg-white/80 backdrop-blur-md border-b border-gray-200">
-      <div class="h-full max-w-screen-2xl mx-auto px-6 flex items-center justify-between">
+    <!-- 简洁顶部横幅 - 只保留返回首页 Logo -->
+    <header class="fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      <div class="h-full max-w-3xl mx-auto px-4 flex items-center">
         <router-link to="/" class="flex items-center space-x-2.5 group">
           <img src="/logo.png" alt="Fast Info" class="w-6 h-6 rounded-md transition-transform group-hover:scale-105">
           <span class="text-base font-medium text-black">Fast Info</span>
         </router-link>
-
-        <nav class="hidden md:flex items-center space-x-6">
-          <router-link to="/" class="nav-link">首页</router-link>
-          <router-link to="/tech" class="nav-link">科技</router-link>
-          <router-link to="/dev" class="nav-link">开发者</router-link>
-          <router-link to="/academic" class="nav-link">学术</router-link>
-          <router-link to="/product" class="nav-link">产品</router-link>
-        </nav>
-
-        <button class="px-3 py-1.5 text-sm font-medium text-black hover:bg-gray-100 rounded-md transition-colors">
-          登录
-        </button>
       </div>
     </header>
 
     <!-- 主内容区 -->
-    <main class="pt-12">
+    <main class="pt-16">
       <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- 搜索头部 -->
         <div class="py-8 sm:py-12 max-w-3xl mx-auto">
@@ -477,20 +465,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* 导航链接 */
-.nav-link {
-  @apply text-sm text-gray-600 hover:text-black transition-colors relative;
-}
-
-.nav-link.router-link-active {
-  @apply text-black font-medium;
-}
-
-.nav-link.router-link-active::after {
-  content: '';
-  @apply absolute -bottom-3 left-0 right-0 h-0.5 bg-black;
-}
-
 /* 筛选芯片 */
 .filter-chip {
   @apply px-3 py-1.5 text-xs font-medium border border-gray-200 rounded-full
@@ -572,7 +546,7 @@ onMounted(() => {
          border border-purple-200 rounded-xl
          hover:from-purple-100 hover:via-blue-100 hover:to-cyan-100
          hover:border-purple-300 hover:shadow-md
-         active:scale-98 transition-all duration-200 cursor-pointer;
+         active:scale-95 transition-all duration-200 cursor-pointer;
   color: #6366f1;
 }
 
