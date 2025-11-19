@@ -170,18 +170,40 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-white">
-    <!-- 简洁顶部横幅 - 只保留返回首页 Logo -->
-    <header class="fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 backdrop-blur-md border-b border-gray-200">
-      <div class="h-full max-w-3xl mx-auto px-4 flex items-center">
-        <router-link to="/" class="flex items-center space-x-2.5 group">
-          <img src="/logo.png" alt="Fast Info" class="w-6 h-6 rounded-md transition-transform group-hover:scale-105">
+    <!-- 顶部导航栏 - 与首页保持一致 -->
+    <header class="fixed top-0 left-0 right-0 z-50 h-12 bg-white border-b border-gray-200">
+      <div class="h-full max-w-screen-2xl mx-auto px-6 flex items-center justify-between">
+        <!-- Logo -->
+        <router-link to="/" class="flex items-center space-x-2.5 transition-transform duration-200 hover:-translate-y-0.5">
+          <img src="/logo.png" alt="Fast Info Logo" class="w-6 h-6 rounded-md">
           <span class="text-base font-medium text-black">Fast Info</span>
         </router-link>
+
+        <!-- 搜索框 -->
+        <form @submit.prevent="performSearch" class="hidden md:flex items-center flex-1 max-w-md mx-8">
+          <div class="relative w-full">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="搜索 AI、React、Vue..."
+              class="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-colors"
+              @keypress.enter="performSearch"
+            />
+          </div>
+        </form>
+
+        <!-- 登录按钮 -->
+        <button class="px-3 py-1.5 text-sm font-medium text-black hover:bg-gray-100 rounded-md transition-colors">
+          登录
+        </button>
       </div>
     </header>
 
     <!-- 主内容区 -->
-    <main class="pt-16">
+    <main class="pt-12">
       <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- 搜索头部 -->
         <div class="py-8 sm:py-12 max-w-3xl mx-auto">
