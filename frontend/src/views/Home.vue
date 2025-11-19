@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { getArticles } from '@/api/article'
+
+const router = useRouter()
 
 // 状态管理
 const articles = ref([])
@@ -9,6 +12,7 @@ const error = ref(null)
 const currentCategory = ref('all')
 const showAISummary = ref({}) // 记录每篇文章是否展开 AI 摘要
 const isSubscribed = ref(false) // 订阅状态（未来实现）
+const searchQuery = ref('') // 搜索关键词
 
 // 获取文章列表
 const fetchArticles = async (category = 'all') => {
@@ -67,6 +71,13 @@ const toggleAISummary = (event, articleId) => {
   showAISummary.value[articleId] = !showAISummary.value[articleId]
 }
 
+// 搜索功能
+const handleSearch = () => {
+  if (searchQuery.value.trim()) {
+    router.push(`/search?q=${encodeURIComponent(searchQuery.value.trim())}`)
+  }
+}
+
 // 组件挂载时获取文章
 onMounted(() => {
   fetchArticles()
@@ -84,17 +95,24 @@ onMounted(() => {
           <span class="text-base font-medium text-black">Fast Info</span>
         </router-link>
 
-        <!-- 导航菜单 -->
-        <nav class="hidden md:flex items-center space-x-6">
-          <router-link to="/" class="nav-link">首页</router-link>
-          <router-link to="/tech" class="nav-link">科技</router-link>
-          <router-link to="/dev" class="nav-link">开发者</router-link>
-          <router-link to="/opensource" class="nav-link">开源</router-link>
-          <router-link to="/academic" class="nav-link">学术</router-link>
-          <router-link to="/product" class="nav-link">产品</router-link>
-        </nav>
+        <!-- 搜索框 -->
+        <form @submit.prevent="handleSearch" class="hidden md:flex items-center flex-1 max-w-md mx-8">
+          <div class="relative w-full">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="搜索 AI、React、Vue..."
+              class="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-colors"
+              @keypress.enter="handleSearch"
+            />
+          </div>
+        </form>
 
-        <button class="px-3 py-1.5 text-sm font-medium text-black transition-transform duration-200 hover:-translate-y-0.5">
+        <!-- 登录按钮 -->
+        <button class="px-3 py-1.5 text-sm font-medium text-black hover:bg-gray-100 rounded-md transition-colors">
           登录
         </button>
       </div>
@@ -260,19 +278,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* 导航链接 */
-.nav-link {
-  @apply text-sm font-medium text-gray-600 transition-all duration-200;
-}
-
-.nav-link:hover {
-  @apply text-black transform -translate-y-0.5;
-}
-
-.router-link-active {
-  @apply text-black;
-}
-
 /* 分类标签 */
 .nav-tab {
   @apply px-4 py-3 text-sm font-medium text-gray-600 border-b-2 border-transparent transition-all duration-200;
