@@ -1,1526 +1,361 @@
 # Fast Info 开发工作流
 
-> 本文档记录项目的开发流程、任务分解和进度跟踪
-
-**项目周期**：4周（MVP）
-**开始日期**：2025-11-15
-**目标完成**：2025-12-15
+> 项目开发流程、任务分解和进度跟踪
+> **版本**: v2.0.0 | **更新日期**: 2026-01-01
 
 ---
 
-## 📊 总体进度
+## 📊 项目状态
 
 ```
-项目进度: ▰▰▰▰▰▰▰▱▱▱ 70%
+项目进度: ▰▰▰▰▰▰▰▰▰▰ 100%
 
-Week 1: ▰▰▰▰▰▰▰ 7/7 ✅
-Week 2: ▰▰▰▰▱▱▱▱ 4/8 (AI功能 + 前端优化) 🔄
-Week 3: ▱▱▱▱▱▱▱ 0/7 (功能完善)
-Week 4: ▱▱▱▱▱▱▱ 0/7 (测试部署)
+v2.0.0 里程碑 ✅
+- ✅ 自建 PostgreSQL 数据库
+- ✅ 卖报员 Agent 核心功能
+- ✅ AI 摘要服务
+- ✅ Telegram 推送通知
+- ✅ 多源爬虫系统
+
+下一版本: v2.1.0 (规划中)
 ```
-
-**当前阶段**：Week 2 进行中
-**产品定位**：技术情报分析平台（不是内容转载平台）
-**下一里程碑**：高级筛选 + 文章收藏 + 法律合规页面
-**最后更新**：2025-11-19 (Claude)
-
-**⚠️ 重要提醒**：本项目必须严格遵守中美法律法规，特别是版权法。详见下方"法律合规要求"。
-
----
-
-## 🚨 法律合规要求（必读）
-
-**Fast Info 必须严格遵守中国和美国的版权法和知识产权法。**
-
-### 核心原则
-
-1. **产品定位**：技术情报分析平台，不是内容转载平台
-2. **核心价值**：原创分析 + 趋势发现，不是内容搬运
-3. **内容使用**：只展示标题、链接、API摘要，不抓取完整原文
-4. **AI功能**：生成原创分析，不改写/转述原文
-5. **来源标注**：所有内容必须明确标注来源和作者
-
-### 必须遵守的规则
-
-**✅ 允许**：
-- 展示标题、作者、时间、链接
-- API 官方摘要
-- 原创技术分析和评论
-- 趋势统计和评分
-
-**❌ 禁止**：
-- 抓取并展示完整原文
-- 翻译完整文章
-- 移除作者署名
-- 绕过付费墙
-
-### 必须实现的功能
-
-- [ ] 版权声明页面（/copyright）
-- [ ] 服务条款页面（/terms）
-- [ ] 隐私政策页面（/privacy）
-- [ ] 版权投诉渠道（/dmca）
-- [ ] 所有内容标注来源
 
 ---
 
 ## 🗓️ 开发里程碑
 
-### Week 1：项目搭建 (2025-11-15 ~ 2025-11-22) ✅
+### v2.0.0 - 卖报员 Agent (已完成)
 
-**目标**：完成开发环境搭建和基础框架
+**目标**: 从内容聚合平台升级为智能检索平台
 
-**关键成果**：
-- ✅ 项目策划书和工作流文档
-- ✅ 前端项目框架搭建完成（Vue 3 + Vite + TailwindCSS + Geist 字体）
-- ✅ 后端项目框架搭建完成（Express + Supabase）
-- ✅ 数据库设计完成（Supabase PostgreSQL + RLS + 索引优化）
-- ✅ **6 个数据源全部完成**（Hacker News, GitHub Trending, Dev.to, arXiv, AIBase, Product Hunt）
-- ✅ 基础页面可以展示真实数据（5 个分类）
-- ✅ 自动分类系统（tech/dev/opensource/academic/product）
-- ✅ 调度器系统（定时自动抓取）
-- ✅ 数据清理系统（48小时自动清理）
+**核心成果**:
 
-### Week 2-3：AI 智能分析 + 前端优化 (2025-11-17 ~ 2025-12-01) 🔄
+#### 1. 自建数据库
+- ✅ PostgreSQL 数据库部署
+- ✅ 数据库连接池
+- ✅ 指数退避重试机制
+- ✅ 健康检查功能
+- ✅ 降级到 Supabase 的备用方案
 
-**目标**：从简单聚合升级为智能分析平台
+#### 2. 卖报员 Agent
+- ✅ 自然语言理解
+- ✅ 工具推理（豆包大模型）
+- ✅ 搜索工具
+- ✅ 分类筛选工具
+- ✅ 时间筛选工具
+- ✅ 来源筛选工具
+- ✅ 热点获取工具
+- ✅ 数据统计工具
 
-**核心功能调整**：
-- 定位从"内容聚合"转变为"技术情报分析"
-- 增加 AI 智能分析功能（合法合规）
-- 优化前端展示和用户体验
+#### 3. AI 摘要服务
+- ✅ 自动摘要生成
+- ✅ 后台调度服务
+- ✅ 摘要存储与展示
 
-**关键成果**：
-- ✅ **AI 智能分析功能**（基础完成）
-  - ✅ AI 自动摘要（豆包大模型，200-300字）
-  - ✅ autoAI 后台服务（每 60 秒自动生成）
-  - ✅ AI 摘要展示和交互（展开/收起）
-  - ⬜ AI 技术分析（原创内容）
-  - ⬜ 趋势预测评分
-  - ⬜ 热度分析可视化
-- 🔄 **前端页面完善**（部分完成）
-  - ⬜ Product 分类页面
-  - ✅ 搜索功能（全文搜索 + 分页）
-  - ✅ 分页功能（上一页/下一页）
-  - ✅ 搜索页面导航优化（添加返回首页按钮）(2025-11-19)
-  - ⬜ 无限滚动
-  - ⬜ 响应式设计优化
-- ⬜ **法律合规**
-  - 版权声明页面
-  - 服务条款
-  - 隐私政策
-  - DMCA 投诉渠道
-- ⬜ **用户体验优化**
-  - 加载状态优化
-  - 错误处理完善
-  - 性能优化
+#### 4. 推送通知系统
+- ✅ Telegram Bot 集成
+- ✅ 每日摘要推送
+- ✅ 用户订阅管理
 
-### Week 3：功能完善 (2025-12-01 ~ 2025-12-08)
-
-**目标**：完善功能和优化体验
-
-**关键成果**：
-- ⬜ 搜索功能可用
-- ⬜ 响应式设计完成
-- ⬜ 基础性能优化
-- ⬜ UI/UX 优化
-
-### Week 4：测试部署 (2025-12-09 ~ 2025-12-15)
-
-**目标**：上线可访问的版本
-
-**关键成果**：
-- ⬜ 功能测试通过
-- ⬜ 部署到免费平台
-- ⬜ 域名配置完成
-- ⬜ 项目文档完善
+#### 5. 多源爬虫系统
+- ✅ Hacker News API
+- ✅ GitHub Trending 爬虫
+- ✅ Dev.to API
+- ✅ arXiv API
+- ✅ V2EX 爬虫
+- ✅ 掘金爬虫
 
 ---
 
-## 📋 详细任务清单
+## 📁 项目结构
 
-### Phase 1：环境准备（Day 1-2）
-
-#### 1.1 开发环境配置
-- [ ] **安装 Node.js**
-  - 状态：⬜ 未开始
-  - 负责人：Johnny
-  - 说明：安装 Node.js 18+ LTS 版本
-  - 验收：执行 `node -v` 和 `npm -v` 正常
-
-- [ ] **安装 Git**
-  - 状态：⬜ 未开始
-  - 负责人：Johnny
-  - 说明：用于版本管理
-  - 验收：执行 `git --version` 正常
-
-- [ ] **安装 VS Code**
-  - 状态：⬜ 未开始
-  - 负责人：Johnny
-  - 说明：推荐插件：Volar, ESLint, Prettier
-  - 验收：VS Code 可正常打开项目
-
-- [ ] **注册必要账号**
-  - 状态：⬜ 未开始
-  - 负责人：Johnny
-  - 说明：GitHub, Vercel, MongoDB Atlas
-  - 验收：所有账号注册成功
-
-#### 1.2 GitHub Student Pack 申请
-- [ ] **申请学生认证**
-  - 状态：⬜ 未开始
-  - 负责人：Johnny
-  - 链接：https://education.github.com/pack
-  - 说明：使用学校邮箱申请
-  - 验收：收到批准邮件
-
-- [ ] **激活 DigitalOcean**
-  - 状态：⬜ 未开始
-  - 说明：获取 $200 信用额度
-  - 验收：账户余额显示
-
-- [ ] **激活 MongoDB Atlas**
-  - 状态：⬜ 未开始
-  - 说明：升级到学生版
-  - 验收：可以创建集群
+```
+Fast Info/
+├── backend/
+│   ├── server.js              # 服务器入口
+│   ├── src/
+│   │   ├── db/                # PostgreSQL 连接
+│   │   ├── routes/            # API 路由
+│   │   │   ├── article.js     # 文章 API
+│   │   │   ├── ai.js          # AI API
+│   │   │   ├── chat.js        # Agent 聊天
+│   │   │   └── push.js        # 推送通知
+│   │   ├── services/          # 业务逻辑
+│   │   │   ├── newsboyAgent.js  # 卖报员 Agent
+│   │   │   ├── articleService.js
+│   │   │   ├── aiService.js
+│   │   │   ├── autoAIService.js
+│   │   │   └── pushService.js
+│   │   ├── crawlers/          # 爬虫
+│   │   │   └── scheduler.js   # 调度器
+│   │   └── jobs/              # 定时任务
+│   │       └── dailyDigest.js # 每日摘要推送
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── views/             # 页面
+│   │   ├── components/        # 组件
+│   │   ├── api/               # API 封装
+│   │   ├── router/            # 路由
+│   │   └── store/             # 状态管理
+│   └── package.json
+│
+├── scripts/
+│   ├── init.sql               # 数据库初始化
+│   └── migrate.js             # 数据迁移
+│
+└── docs/
+    └── .kiro/specs/           # 需求规格
+```
 
 ---
 
-### Phase 2：前端项目搭建（Day 2-3）
+## 🔧 开发工作流
 
-#### 2.1 创建 Vue 项目
-- [x] **初始化项目**
-  - 状态：✅ 已完成
-  - 命令：`npm create vite@latest frontend -- --template vue`
-  - 位置：`/frontend`
-  - 验收：项目可以启动 ✓
+### 1. 功能开发流程
 
-- [x] **安装依赖**
-  - 状态：✅ 已完成
-  - 依赖列表：
-    ```bash
-    npm install vue-router@4 pinia axios dayjs
-    npm install -D tailwindcss@3 postcss autoprefixer
-    npm install naive-ui geist
-    ```
-  - 验收：所有依赖安装成功 ✓
+```bash
+# 1. 拉取最新代码
+git pull origin main
 
-- [x] **配置 TailwindCSS**
-  - 状态：✅ 已完成
-  - 文件：`tailwind.config.js`, `postcss.config.js`
-  - 验收：样式可以生效 ✓
-  - 备注：降级到 TailwindCSS v3 以兼容 PostCSS
+# 2. 创建功能分支
+git checkout -b feature/your-feature
 
-- [x] **配置路由**
-  - 状态：✅ 已完成
-  - 文件：`src/router/index.js`
-  - 路由：/, /tech, /dev, /academic, /search
-  - 验收：路由跳转正常 ✓
+# 3. 开发
+# ... 编写代码 ...
 
-#### 2.2 创建基础结构
-- [x] **创建目录结构**
-  - 状态：✅ 已完成
-  - 结构：
-    ```
-    frontend/
-    ├── src/
-    │   ├── views/        # 页面 ✓
-    │   ├── components/   # 组件 ✓
-    │   ├── api/          # API 调用 ✓
-    │   ├── store/        # Pinia store ✓
-    │   ├── router/       # 路由 ✓
-    │   ├── assets/       # 静态资源 ✓
-    │   └── utils/        # 工具函数 ✓
-    ```
-  - 验收：文件夹创建完成 ✓
+# 4. 测试
+npm test                # 后端测试
+cd frontend && npm test # 前端测试
 
-- [x] **创建基础页面**
-  - 状态：✅ 已完成
-  - 页面：
-    - `Home.vue` - 首页（Figma 风格设计）✓
-    - `Tech.vue` - 科技页面 ✓
-    - `Dev.vue` - 开发者页面 ✓
-    - `Academic.vue` - 学术页面 ✓
-    - `Search.vue` - 搜索页面 ✓
-  - 验收：页面可以访问 ✓
+# 5. 提交
+git add .
+git commit -m "feat: 添加xxx功能"
 
-- [x] **配置 API 服务**
-  - 状态：✅ 已完成
-  - 文件：`src/api/request.js`, `src/api/article.js`
-  - 说明：封装 axios，配置拦截器
-  - 验收：可以发送请求 ✓
+# 6. 推送
+git push origin feature/your-feature
 
-#### 2.3 设计系统配置
-- [x] **配置字体系统**
-  - 状态：✅ 已完成
-  - 字体：Geist（英文）+ Noto Sans SC（中文）
-  - 说明：Vercel 官方字体，专业现代感
-  - 验收：字体加载正常 ✓
+# 7. 合并到主分支
+git checkout main
+git merge feature/your-feature
+git push origin main
+```
 
-- [x] **集成项目 Logo**
-  - 状态：✅ 已完成
-  - 文件：`public/logo.png`
-  - 说明：黑底白色波浪线设计
-  - 验收：Logo 显示正常 ✓
+### 2. Bug 修复流程
 
-- [x] **Figma 风格设计**
-  - 状态：✅ 已完成
-  - 特点：极简、48px 固定顶栏、transform 效果
-  - 参考：https://froth-pry-36578210.figma.site/
-  - 验收：设计风格统一 ✓
+```bash
+# 1. 创建修复分支
+git checkout -b fix/bug-name
+
+# 2. 修复 Bug
+# ... 修复代码 ...
+
+# 3. 测试验证
+npm test
+
+# 4. 提交
+git commit -m "fix: 修复xxx问题"
+
+# 5. 合并
+git checkout main
+git merge fix/bug-name
+git push origin main
+```
+
+### 3. 发布流程
+
+```bash
+# 1. 更新版本号
+npm version patch  # 或 minor / major
+
+# 2. 构建
+cd backend && npm test
+cd ../frontend && npm run build
+
+# 3. 提交
+git add .
+git commit -m "chore: 发布 v2.0.0"
+git push origin main
+
+# 4. 打标签
+git tag v2.0.0
+git push origin v2.0.0
+```
 
 ---
 
-### Phase 3：后端项目搭建（Day 3-4）
+## 📋 任务清单
 
-#### 3.1 创建 Node.js 项目
-- [x] **初始化项目**
-  - 状态：✅ 已完成
-  - 命令：`npm init -y`
-  - 位置：`/backend`
-  - 验收：package.json 创建成功 ✓
+### v2.1.0 规划
 
-- [x] **安装依赖**
-  - 状态：✅ 已完成
-  - 依赖列表：
-    ```bash
-    npm install express mongoose dotenv cors
-    npm install axios cheerio xml2js
-    npm install node-cron winston joi
-    npm install -D nodemon
-    ```
-  - 验收：所有依赖安装成功 ✓
+#### 高优先级
+- [ ] MCP Server 集成
+- [ ] 邮件推送支持
+- [ ] 用户收藏功能
+- [ ] 高级筛选界面
 
-- [x] **配置项目结构**
-  - 状态：✅ 已完成
-  - 结构：
-    ```
-    backend/
-    ├── src/
-    │   ├── routes/       # 路由 ✓
-    │   ├── controllers/  # 控制器 ✓
-    │   ├── models/       # 数据模型 ✓
-    │   ├── services/     # 业务逻辑 ✓
-    │   ├── crawlers/     # 爬虫 ✓
-    │   ├── utils/        # 工具 ✓
-    │   └── config/       # 配置 ✓
-    ├── .env.example      # 环境变量示例 ✓
-    └── server.js         # 入口文件（待创建）
-    ```
-  - 验收：文件夹创建完成 ✓
+#### 中优先级
+- [ ] 文章详情页
+- [ ] 相关文章推荐
+- [ ] 阅读历史记录
+- [ ] 个性化推荐
 
-#### 3.2 配置数据库
-- [ ] **创建 MongoDB 集群**
-  - 状态：⬜ 待用户操作
-  - 平台：MongoDB Atlas
-  - 说明：选择免费版 M0，区域选择离你近的
-  - 验收：集群创建成功
-  - 备注：需要用户注册账号并创建集群
-
-- [ ] **配置数据库连接**
-  - 状态：⬜ 未开始
-  - 文件：`src/config/database.js`
-  - 说明：使用 mongoose 连接
-  - 验收：连接成功无报错
-  - 依赖：需要先完成 MongoDB 集群创建
-
-- [ ] **创建数据模型**
-  - 状态：⬜ 未开始
-  - 文件：
-    - `src/models/Article.js`
-    - `src/models/User.js` (二期)
-    - `src/models/UserSave.js` (二期)
-  - 验收：模型定义正确
-
-#### 3.3 创建基础 API
-- [ ] **设置路由**
-  - 状态：⬜ 未开始
-  - 文件：`src/routes/article.js`
-  - 路由：
-    - GET /api/articles
-    - GET /api/articles/:id
-    - GET /api/categories
-    - POST /api/search
-  - 验收：路由注册成功
-
-- [ ] **编写控制器**
-  - 状态：⬜ 未开始
-  - 文件：`src/controllers/articleController.js`
-  - 功能：获取、搜索、分类等
-  - 验收：接口返回正确
-
-- [ ] **配置 CORS**
-  - 状态：⬜ 未开始
-  - 文件：`server.js`
-  - 说明：允许前端跨域访问
-  - 验收：前端可以请求
+#### 低优先级
+- [ ] 深色模式
+- [ ] 多语言支持
+- [ ] 移动端优化
+- [ ] PWA 支持
 
 ---
 
-### Phase 4：AI 智能分析功能（Week 2，Day 4-8）⭐ 新增
+## 🚀 快速命令
 
-#### 4.0 法律合规页面（必须优先完成）
-- [ ] **创建版权声明页面**
-  - 状态：⬜ 未开始
-  - 文件：`frontend/src/views/Copyright.vue`
-  - 路由：`/copyright`
-  - 内容：
-    - 内容来源说明
-    - Fair Use 声明
-    - 原创内容说明
-    - 投诉流程
-  - 验收：页面可访问，内容完整
+### 后端开发
 
-- [ ] **创建服务条款页面**
-  - 状态：⬜ 未开始
-  - 文件：`frontend/src/views/Terms.vue`
-  - 路由：`/terms`
-  - 内容：用户协议、使用规范
-  - 验收：页面可访问
+```bash
+cd backend
 
-- [ ] **创建隐私政策页面**
-  - 状态：⬜ 未开始
-  - 文件：`frontend/src/views/Privacy.vue`
-  - 路由：`/privacy`
-  - 验收：页面可访问
+# 开发模式
+npm run dev
 
-- [ ] **创建 DMCA 投诉页面**
-  - 状态：⬜ 未开始
-  - 文件：`frontend/src/views/DMCA.vue`
-  - 路由：`/dmca`
-  - 内容：投诉表单、联系方式
-  - 验收：表单可提交
+# 生产模式
+npm start
 
-- [ ] **在所有文章卡片添加来源标注**
-  - 状态：⬜ 未开始
-  - 位置：ArticleCard 组件
-  - 显示：来源平台 + 原文链接
-  - 验收：所有卡片都有清晰标注
+# 爬虫
+npm run crawler          # 定时调度
+npm run crawler:now      # 立即运行
+npm run crawler:test     # 测试爬虫
 
-#### 4.1 AI 服务配置
-- [x] **选择 AI 服务提供商**
-  - 状态：✅ 已完成
-  - 选择：豆包（Doubao）大模型
-  - 原因：性价比高、中文效果好、稳定性强
-  - 验收：用户确认选择 ✓
+# 测试
+npm test                 # 运行测试
+npm run test:watch       # 监视模式
 
-- [x] **配置 AI API**
-  - 状态：✅ 已完成
-  - 文件：`backend/src/services/doubaoService.js`
-  - 环境变量：DOUBAO_API_KEY, DOUBAO_ENDPOINT_ID
-  - 验收：API 可正常调用 ✓
+# 数据库迁移
+npm run migrate          # 运行迁移
+```
 
-- [x] **创建 AI Service**
-  - 状态：✅ 已完成
-  - 文件：`backend/src/services/doubaoService.js`, `backend/src/services/autoAIService.js`
-  - 功能：
-    - ✅ generateSummary(article) - 生成摘要
-    - ✅ autoAI 后台服务（每 60 秒自动检查并生成）
-    - ⬜ generateAnalysis(article) - 生成技术分析
-    - ⬜ answerQuestion(article, question) - AI 问答
-  - 验收：摘要生成正常 ✓
+### 前端开发
 
-#### 4.2 AI 摘要功能
-- [ ] **设计 AI 提示词（Prompt）**
-  - 状态：⬜ 未开始
-  - 摘要 Prompt：
-    ```
-    基于以下标题和描述，生成200字的技术摘要（不是翻译原文）：
-    标题：{title}
-    描述：{description}
+```bash
+cd frontend
 
-    要求：
-    1. 概括核心内容
-    2. 突出技术要点
-    3. 中文输出
-    4. 不要复述原文
-    ```
-  - 验收：生成效果符合要求
+# 开发模式
+npm run dev
 
-- [ ] **实现摘要生成逻辑**
-  - 状态：⬜ 未开始
-  - 策略：
-    - 只对热门文章生成（quality_score > 60）
-    - 异步生成，不阻塞主流程
-    - 缓存结果到数据库
-  - 验收：摘要生成成功
+# 构建
+npm run build
 
-- [ ] **数据库添加 AI 字段**
-  - 状态：⬜ 未开始
-  - 迁移：添加 ai_summary, ai_analysis 字段
-  - 类型：TEXT
-  - 验收：字段创建成功
+# 预览构建
+npm run preview
+```
 
-#### 4.3 AI 技术分析功能
-- [ ] **设计分析 Prompt**
-  - 状态：⬜ 未开始
-  - 分析 Prompt：
-    ```
-    作为技术专家，分析以下项目/文章：
-    标题：{title}
-    描述：{description}
-    分类：{category}
+### 数据库操作
 
-    请提供：
-    1. 技术栈分析
-    2. 创新点
-    3. 适用场景
-    4. 学习价值
-    5. 推荐指数（1-5星）
+```bash
+# 初始化数据库
+psql -U fastinfo -d fastinfo -f scripts/init.sql
 
-    输出格式：
-    ## 技术栈
-    ...
-    ## 创新点
-    ...
-    ```
-  - 验收：分析内容有价值
+# 连接数据库
+psql -U fastinfo -d fastinfo
 
-- [ ] **实现分析生成 API**
-  - 状态：⬜ 未开始
-  - 路由：POST /api/articles/:id/analyze
-  - 逻辑：按需生成（用户点击时）
-  - 验收：API 返回正确
+# 备份数据库
+pg_dump -U fastinfo fastinfo > backup.sql
 
-#### 4.4 趋势预测评分算法
-- [ ] **设计趋势评分算法**
-  - 状态：⬜ 未开始
-  - 文件：`backend/src/utils/trendScorer.js`
-  - 因素：
-    - 热度增长速度（当前 vs 24h前）
-    - 多源提及度（多个平台都在讨论）
-    - 评论/点赞增长率
-    - 时间因素（新鲜度）
-  - 公式：
-    ```
-    trend_score =
-      growth_rate(40%) +
-      cross_platform(30%) +
-      engagement_rate(20%) +
-      freshness(10%)
-    ```
-  - 验收：算法合理
-
-- [ ] **实现趋势计算**
-  - 状态：⬜ 未开始
-  - 存储：trend_score 字段
-  - 更新：每小时重新计算
-  - 验收：评分准确
-
-- [ ] **添加"正在爆发"标签**
-  - 状态：⬜ 未开始
-  - 规则：trend_score > 80
-  - 展示：文章卡片上显示 🔥 标签
-  - 验收：标签显示正确
-
-#### 4.5 前端 AI 功能集成
-- [ ] **文章详情页面**
-  - 状态：⬜ 未开始
-  - 文件：`frontend/src/views/ArticleDetail.vue`
-  - 路由：`/article/:id`
-  - 内容：
-    - 标题、来源、时间
-    - AI 摘要
-    - AI 技术分析（付费功能占位）
-    - 原文链接按钮
-    - 趋势评分可视化
-  - 验收：页面完整
-
-- [ ] **AI 摘要卡片组件**
-  - 状态：⬜ 未开始
-  - 组件：`AISummaryCard.vue`
-  - 功能：
-    - 显示 AI 摘要
-    - loading 状态
-    - "生成摘要"按钮
-  - 验收：交互流畅
+# 恢复数据库
+psql -U fastinfo fastinfo < backup.sql
+```
 
 ---
 
-### Phase 5：前端页面优化（Week 2，Day 9-12）
+## 📊 API 端点
 
-#### 5.1 Product 分类页面
-- [ ] **创建 Product 页面**
-  - 状态：⬜ 未开始
-  - 文件：`frontend/src/views/Product.vue`
-  - 路由：`/product`
-  - 功能：展示 product 分类的文章
-  - 验收：页面正常展示
+### 文章 API
 
-- [ ] **更新导航菜单**
-  - 状态：⬜ 未开始
-  - 添加：Product 链接
-  - 位置：Header 导航栏
-  - 验收：可以跳转
+```
+GET  /api/articles           # 获取文章列表
+GET  /api/articles/:id       # 获取文章详情
+GET  /api/articles/hot       # 获取热门文章
+GET  /api/articles/search    # 搜索文章
+```
 
-#### 5.2 搜索功能实现
-- [x] **后端搜索 API**
-  - 状态：✅ 已完成 (2025-11-19)
-  - 路由：GET /api/articles/search?q=keyword&category=tech&page=1
-  - 功能：
-    - ✅ 全文搜索（标题 + 摘要，ilike 模式）
-    - ✅ 分类筛选支持
-    - ✅ 分页支持（page + limit）
-    - ✅ 按创建时间排序
-  - 验收：搜索准确 ✓（测试：AI 关键词返回 75 条结果）
+### Agent API
 
-- [x] **前端搜索页面**
-  - 状态：✅ 已完成 (2025-11-19)
-  - 文件：`frontend/src/views/Search.vue` (349 lines)
-  - 功能：
-    - ✅ 搜索框和提交
-    - ✅ 结果列表展示
-    - ✅ URL 参数支持（`/search?q=keyword`）
-    - ✅ AI 摘要展开/收起
-    - ✅ 分页控制
-    - ✅ 加载/错误/空状态
-    - ⬜ 关键词高亮（待优化）
-    - ⬜ 高级筛选器（时间、来源）（待开发）
-  - 验收：搜索体验良好 ✓
+```
+POST   /api/chat                    # 发送消息给 Agent
+GET    /api/chat/suggestions        # 获取快捷建议
+DELETE /api/chat/:sessionId         # 清除会话
+```
 
-#### 5.3 分页功能
-- [x] **基础分页实现**
-  - 状态：✅ 已完成 (2025-11-19)
-  - 方式：上一页/下一页按钮
-  - 位置：搜索结果页面底部
-  - 验收：分页正常 ✓
+### AI API
 
-- [ ] **无限滚动实现**
-  - 状态：⬜ 未开始
-  - 工具：Intersection Observer
-  - 逻辑：滚动到底部自动加载
-  - 验收：加载流畅
+```
+GET  /api/ai/stats                  # AI 统计信息
+POST /api/ai/batch-generate         # 批量生成摘要
+GET  /api/ai/generate-summary/:id   # 生成单篇文章摘要
+```
 
-- [x] **加载状态优化**
-  - 状态：✅ 基础完成 (2025-11-19)
-  - ✅ Loading 文字提示
-  - ✅ 错误状态提示
-  - ⬜ 骨架屏设计（待优化）
-  - 验收：基本体验流畅 ✓
+### 推送 API
 
-#### 5.4 响应式设计
-- [ ] **移动端适配**
-  - 状态：⬜ 未开始
-  - 断点：sm(640px), md(768px)
-  - 调整：
-    - 导航折叠
-    - 卡片单列
-    - 字体大小
-  - 验收：手机浏览正常
-
-- [ ] **平板适配**
-  - 状态：⬜ 未开始
-  - 布局：两列
-  - 验收：平板浏览正常
+```
+GET    /api/push/configs            # 获取推送配置
+POST   /api/push/configs            # 创建推送配置
+PUT    /api/push/configs/:id        # 更新推送配置
+DELETE /api/push/configs/:id        # 删除推送配置
+POST   /api/push/digest             # 手动触发摘要推送
+```
 
 ---
 
-### Phase 6：爬虫开发（Day 4-7）【已完成】
+## 🔍 常见问题
 
-#### 4.1 GitHub Trending 爬虫
-- [ ] **研究数据源**
-  - 状态：⬜ 未开始
-  - URL：https://github.com/trending
-  - 说明：分析页面结构或找 API
-  - 验收：能获取到数据
+### Q: 如何添加新的数据源？
 
-- [ ] **编写爬虫**
-  - 状态：⬜ 未开始
-  - 文件：`src/crawlers/github.js`
-  - 字段：title, url, description, stars, language
-  - 验收：数据格式正确
+1. 在 `backend/src/crawlers/` 创建新的爬虫文件
+2. 继承 BaseCrawler 类
+3. 实现 `crawl()` 方法
+4. 在 `scheduler.js` 中注册
 
-- [ ] **测试和调试**
-  - 状态：⬜ 未开始
-  - 说明：运行爬虫，检查数据
-  - 验收：数据保存到数据库
+### Q: 如何添加新的 Agent 工具？
 
-#### 4.2 Hacker News 爬虫
-- [ ] **使用官方 API**
-  - 状态：⬜ 未开始
-  - API：https://github.com/HackerNews/API
-  - 文件：`src/crawlers/hackernews.js`
-  - 验收：能获取热门文章
+1. 在 `newsboyAgent.js` 中定义工具
+2. 实现工具函数
+3. 在系统提示词中描述工具
 
-- [ ] **数据处理**
-  - 状态：⬜ 未开始
-  - 说明：转换为统一格式
-  - 验收：数据保存成功
+### Q: 如何配置 Telegram 推送？
 
-#### 4.3 Dev.to 爬虫
-- [ ] **使用官方 API**
-  - 状态：⬜ 未开始
-  - API：https://dev.to/api
-  - 文件：`src/crawlers/devto.js`
-  - 验收：能获取文章
+```env
+# backend/.env
+ENABLE_PUSH=true
+TELEGRAM_BOT_TOKEN=your_bot_token
+```
 
-#### 4.4 掘金爬虫
-- [ ] **研究接口**
-  - 状态：⬜ 未开始
-  - 说明：掘金有非官方 API
-  - 文件：`src/crawlers/juejin.js`
-  - 验收：能获取热门文章
+### Q: 如何切换数据库？
 
-#### 4.5 V2EX 爬虫
-- [ ] **使用官方 API**
-  - 状态：⬜ 未开始
-  - API：https://www.v2ex.com/api
-  - 文件：`src/crawlers/v2ex.js`
-  - 验收：能获取最热主题
+```env
+# 使用 PostgreSQL
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=fastinfo
+DB_USER=fastinfo
+DB_PASSWORD=your_password
 
-#### 4.6 少数派 RSS
-- [ ] **解析 RSS**
-  - 状态：⬜ 未开始
-  - URL：https://sspai.com/feed
-  - 文件：`src/crawlers/sspai.js`
-  - 工具：xml2js
-  - 验收：能解析 RSS
-
-#### 4.7 IT之家 RSS
-- [ ] **解析 RSS**
-  - 状态：⬜ 未开始
-  - URL：https://www.ithome.com/rss
-  - 文件：`src/crawlers/ithome.js`
-  - 验收：能解析 RSS
-
-#### 4.8 arXiv API
-- [ ] **使用官方 API**
-  - 状态：⬜ 未开始
-  - API：http://arxiv.org/help/api
-  - 文件：`src/crawlers/arxiv.js`
-  - 分类：cs.AI, cs.LG 等
-  - 验收：能获取论文
-
-#### 4.9 爬虫统一管理
-- [ ] **创建爬虫管理器**
-  - 状态：⬜ 未开始
-  - 文件：`src/crawlers/index.js`
-  - 功能：
-    - 统一调度所有爬虫
-    - 错误处理和重试
-    - 日志记录
-  - 验收：可以批量运行
-
-- [ ] **配置定时任务**
-  - 状态：⬜ 未开始
-  - 文件：`src/services/scheduler.js`
-  - 工具：node-cron
-  - 频率：每 2 小时
-  - 验收：定时任务正常运行
+# 降级到 Supabase（不设置 DB_HOST）
+SUPABASE_URL=your_url
+SUPABASE_ANON_KEY=your_key
+```
 
 ---
 
-### Phase 5：数据处理（Day 7-8）
+## 📚 相关文档
 
-#### 5.1 数据清洗
-- [ ] **去重处理**
-  - 状态：⬜ 未开始
-  - 文件：`src/services/dataProcessor.js`
-  - 规则：
-    - URL 完全相同去重
-    - 标题相似度 > 85% 去重
-  - 验收：重复数据不会保存
-
-- [ ] **数据标准化**
-  - 状态：⬜ 未开始
-  - 处理：
-    - 时间格式统一
-    - 文本清洗（去除 HTML 标签）
-    - 摘要长度限制
-  - 验收：数据格式一致
-
-#### 5.2 质量评分
-- [ ] **评分算法**
-  - 状态：⬜ 未开始
-  - 文件：`src/services/scorer.js`
-  - 公式：`score = 来源权重(60%) + 时效性(40%)`
-  - 来源权重：
-    - GitHub, HN: 1.0
-    - Dev.to, 掘金: 0.9
-    - RSS 源: 0.8
-  - 验收：每篇文章都有分数
-
-#### 5.3 自动分类
-- [ ] **分类规则**
-  - 状态：⬜ 未开始
-  - 规则：
-    - 根据来源自动分类
-    - GitHub, HN, Dev.to → dev
-    - 少数派, IT之家 → tech
-    - arXiv → academic
-  - 验收：分类正确
+- [PROJECT_PLAN.md](PROJECT_PLAN.md) - 项目策划书
+- [PROJECT_RULES.md](PROJECT_RULES.md) - 开发规范
+- [AI_GUIDE.md](AI_GUIDE.md) - AI 助手指南
+- [README.md](README.md) - 项目说明
 
 ---
 
-### Phase 6：前端页面开发（Day 9-14）
-
-#### 6.1 首页开发
-- [ ] **页面布局**
-  - 状态：⬜ 未开始
-  - 文件：`src/views/Home.vue`
-  - 组件：Header + ArticleList + Sidebar
-  - 验收：布局正确
-
-- [ ] **文章列表**
-  - 状态：⬜ 未开始
-  - 功能：
-    - 展示文章卡片
-    - 加载更多/分页
-    - 加载状态
-  - 验收：数据正常展示
-
-- [ ] **文章卡片**
-  - 状态：⬜ 未开始
-  - 组件：`ArticleCard.vue`
-  - 内容：标题、来源、摘要、时间、分类
-  - 验收：样式美观
-
-- [ ] **侧边栏**
-  - 状态：⬜ 未开始
-  - 内容：
-    - 分类筛选
-    - 热门标签
-    - 热门排行
-  - 验收：可以交互
-
-#### 6.2 分类页面
-- [ ] **科技分类**
-  - 状态：⬜ 未开始
-  - 文件：`src/views/Tech.vue`
-  - 路由：/tech
-  - 验收：展示科技类文章
-
-- [ ] **开发者分类**
-  - 状态：⬜ 未开始
-  - 文件：`src/views/Dev.vue`
-  - 路由：/dev
-  - 验收：展示开发者文章
-
-- [ ] **学术分类**
-  - 状态：⬜ 未开始
-  - 文件：`src/views/Academic.vue`
-  - 路由：/academic
-  - 验收：展示学术文章
-
-#### 6.3 搜索页面
-- [ ] **搜索框**
-  - 状态：⬜ 未开始
-  - 位置：Header 组件
-  - 功能：输入关键词搜索
-  - 验收：可以触发搜索
-
-- [ ] **搜索结果页**
-  - 状态：⬜ 未开始
-  - 文件：`src/views/Search.vue`
-  - 路由：/search?q=keyword
-  - 功能：展示搜索结果，关键词高亮
-  - 验收：搜索正常
-
-- [ ] **高级筛选**
-  - 状态：⬜ 未开始
-  - 筛选项：日期范围、分类、来源
-  - 验收：筛选有效
-
-#### 6.4 响应式设计
-- [ ] **移动端适配**
-  - 状态：⬜ 未开始
-  - 断点：sm(640px), md(768px), lg(1024px)
-  - 调整：
-    - 侧边栏折叠
-    - 卡片单列显示
-    - 导航栏响应式
-  - 验收：手机浏览正常
-
-- [ ] **平板适配**
-  - 状态：⬜ 未开始
-  - 调整：两列卡片布局
-  - 验收：平板浏览正常
-
-#### 6.5 用户体验优化
-- [ ] **加载状态**
-  - 状态：⬜ 未开始
-  - 组件：骨架屏/Loading 动画
-  - 验收：加载时有反馈
-
-- [ ] **错误处理**
-  - 状态：⬜ 未开始
-  - 场景：网络错误、404、500
-  - 验收：错误有提示
-
-- [ ] **空状态**
-  - 状态：⬜ 未开始
-  - 场景：无数据、搜索无结果
-  - 验收：有友好提示
-
----
-
-### Phase 7：功能完善（Day 15-18）
-
-#### 7.1 排序功能
-- [ ] **多种排序**
-  - 状态：⬜ 未开始
-  - 选项：最新、最热、评分
-  - 位置：页面顶部下拉框
-  - 验收：排序有效
-
-#### 7.2 筛选功能
-- [ ] **时间筛选**
-  - 状态：⬜ 未开始
-  - 选项：今天、本周、本月、全部
-  - 验收：筛选有效
-
-- [ ] **来源筛选**
-  - 状态：⬜ 未开始
-  - 选项：所有数据源
-  - 验收：筛选有效
-
-#### 7.3 性能优化
-- [ ] **图片懒加载**
-  - 状态：⬜ 未开始
-  - 工具：Intersection Observer
-  - 验收：滚动时才加载
-
-- [ ] **虚拟滚动**
-  - 状态：⬜ 未开始
-  - 场景：长列表
-  - 工具：vue-virtual-scroller（可选）
-  - 验收：滚动流畅
-
-- [ ] **缓存优化**
-  - 状态：⬜ 未开始
-  - 方案：
-    - Pinia 状态缓存
-    - LocalStorage 缓存
-  - 验收：重复访问更快
-
-#### 7.4 SEO 优化
-- [ ] **Meta 标签**
-  - 状态：⬜ 未开始
-  - 内容：title, description, keywords
-  - 验收：浏览器标签显示正确
-
-- [ ] **语义化 HTML**
-  - 状态：⬜ 未开始
-  - 标签：article, section, header, nav
-  - 验收：HTML 结构清晰
-
----
-
-### Phase 8：测试与部署（Day 19-21）
-
-#### 8.1 功能测试
-- [ ] **前端测试**
-  - 状态：⬜ 未开始
-  - 测试项：
-    - [ ] 所有页面可访问
-    - [ ] 路由跳转正常
-    - [ ] 搜索功能正常
-    - [ ] 筛选排序正常
-    - [ ] 响应式正常
-    - [ ] 加载状态正常
-  - 验收：无明显 bug
-
-- [ ] **后端测试**
-  - 状态：⬜ 未开始
-  - 测试项：
-    - [ ] API 返回正确
-    - [ ] 爬虫运行正常
-    - [ ] 数据保存正确
-    - [ ] 错误处理正常
-  - 验收：接口稳定
-
-- [ ] **浏览器兼容性**
-  - 状态：⬜ 未开始
-  - 浏览器：Chrome, Safari, Firefox, Edge
-  - 验收：主流浏览器正常
-
-#### 8.2 性能测试
-- [ ] **Lighthouse 测试**
-  - 状态：⬜ 未开始
-  - 指标：Performance > 80
-  - 验收：评分达标
-
-- [ ] **API 响应测试**
-  - 状态：⬜ 未开始
-  - 工具：Postman
-  - 目标：< 500ms
-  - 验收：响应时间合理
-
-#### 8.3 部署准备
-- [ ] **环境变量配置**
-  - 状态：⬜ 未开始
-  - 文件：
-    - 前端：`.env.production`
-    - 后端：`.env`
-  - 内容：API 地址、数据库连接等
-  - 验收：配置正确
-
-- [ ] **构建测试**
-  - 状态：⬜ 未开始
-  - 命令：`npm run build`
-  - 验收：构建成功
-
-#### 8.4 Vercel 部署（前端）
-- [ ] **连接 GitHub**
-  - 状态：⬜ 未开始
-  - 平台：https://vercel.com
-  - 说明：导入 GitHub 仓库
-  - 验收：项目导入成功
-
-- [ ] **配置构建**
-  - 状态：⬜ 未开始
-  - 设置：
-    - Framework: Vite
-    - Root Directory: frontend
-    - Build Command: npm run build
-    - Output Directory: dist
-  - 验收：自动部署成功
-
-- [ ] **配置域名**
-  - 状态：⬜ 未开始
-  - 说明：可用 Vercel 免费域名或自定义
-  - 验收：域名可访问
-
-#### 8.5 Railway 部署（后端）
-- [ ] **创建项目**
-  - 状态：⬜ 未开始
-  - 平台：https://railway.app
-  - 说明：New Project → Deploy from GitHub
-  - 验收：项目创建成功
-
-- [ ] **配置环境变量**
-  - 状态：⬜ 未开始
-  - 变量：
-    - MONGODB_URI
-    - PORT
-    - NODE_ENV=production
-  - 验收：环境变量设置完成
-
-- [ ] **配置构建**
-  - 状态：⬜ 未开始
-  - 设置：
-    - Root Directory: backend
-    - Start Command: node server.js
-  - 验收：部署成功
-
-- [ ] **测试接口**
-  - 状态：⬜ 未开始
-  - 说明：访问 Railway 提供的 URL
-  - 验收：API 可访问
-
-#### 8.6 GitHub Actions 定时任务
-- [ ] **创建 workflow**
-  - 状态：⬜ 未开始
-  - 文件：`.github/workflows/crawler.yml`
-  - 内容：
-    ```yaml
-    name: Crawler
-    on:
-      schedule:
-        - cron: '0 */2 * * *'  # 每2小时
-      workflow_dispatch:
-    jobs:
-      crawl:
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v3
-          - name: Setup Node
-            uses: actions/setup-node@v3
-            with:
-              node-version: 18
-          - name: Install dependencies
-            run: cd backend && npm install
-          - name: Run crawler
-            env:
-              MONGODB_URI: ${{ secrets.MONGODB_URI }}
-            run: cd backend && node src/crawlers/index.js
-    ```
-  - 验收：定时任务运行
-
-- [ ] **配置 Secrets**
-  - 状态：⬜ 未开始
-  - 位置：GitHub 仓库 Settings → Secrets
-  - 变量：MONGODB_URI
-  - 验收：Secrets 配置完成
-
-#### 8.7 文档完善
-- [ ] **README.md**
-  - 状态：⬜ 未开始
-  - 内容：
-    - 项目介绍
-    - 功能特性
-    - 技术栈
-    - 本地开发
-    - 部署说明
-  - 验收：文档完整
-
-- [ ] **API 文档**
-  - 状态：⬜ 未开始
-  - 文件：`API.md`
-  - 内容：所有接口的说明
-  - 验收：文档清晰
-
----
-
-## 🔄 每日工作流程
-
-### 开始工作前
-1. 查看 WORKFLOW.md，确认今日任务
-2. 更新任务状态为"进行中"
-3. 拉取最新代码：`git pull`
-
-### 工作中
-1. 按任务清单逐项完成
-2. 及时提交代码：`git commit -m "描述"`
-3. 遇到问题记录到"问题记录"部分
-
-### 结束工作后
-1. 更新任务状态为"已完成"
-2. 推送代码：`git push`
-3. 更新总体进度
-4. 规划明日任务
-
----
-
-## 📝 开发日志
-
-### 2025-11-15（Week 1, Day 1）
-
-**今日完成**：
-- ✅ 编写项目策划书（PROJECT_PLAN.md）
-- ✅ 制定开发工作流文档（WORKFLOW.md）
-- ✅ 创建 AI 助手工作指南（AI_GUIDE.md）
-- ✅ 初始化 Git 仓库
-- ✅ 创建前端项目（Vue 3 + Vite）
-- ✅ 安装前端依赖（Vue Router, Pinia, Axios, TailwindCSS, Naive UI, Geist）
-- ✅ 配置 TailwindCSS（降级到 v3 解决兼容性问题）
-- ✅ 创建前端目录结构
-- ✅ 配置路由系统（5 个页面）
-- ✅ 封装 API 请求服务
-- ✅ 配置 Pinia 状态管理
-- ✅ 创建基础页面（Home, Tech, Dev, Academic, Search）
-- ✅ 实现 Figma 极简风格设计
-  - 48px 固定顶栏
-  - Transform 效果代替阴影
-  - 纯白背景
-  - 响应式网格布局
-- ✅ 集成项目 Logo（黑底白色波浪线）
-- ✅ 配置字体系统（Geist + Noto Sans SC）
-- ✅ 初始化后端项目（Node.js + Express）
-- ✅ 安装后端依赖
-- ✅ 创建后端目录结构
-- ✅ 配置环境变量示例
-
-**今日问题**：
-- TailwindCSS v4 与 PostCSS 不兼容，已降级到 v3 解决
-
-**明日计划**：
-- 创建后端 server.js 入口文件
-- 配置数据库连接（需要先注册 MongoDB Atlas）
-- 创建 Article 数据模型
-- 创建基础 API 路由
-
----
-
-### 2025-11-16（Week 1, Day 2）
-
-**今日完成**：
-- ✅ 数据库搭建（Supabase 替代 MongoDB）
-  - 创建 articles 表完整 schema
-  - 配置 RLS 行级安全策略
-  - 添加性能优化索引（分类、来源、时间等）
-  - 配置自动更新 updated_at 触发器
-  - 启用全文搜索索引
-- ✅ 后端 API 框架完成
-  - 创建 Supabase 客户端配置（anon key + service_role key）
-  - 实现服务层架构（controllers → services → Supabase）
-  - 完成 Article Service 全部 CRUD 方法
-  - 完成 Article Controller 及参数验证
-  - 创建 RESTful 路由（/api/articles）
-  - 测试所有 API 端点正常运行
-- ✅ 爬虫系统开发（4 个数据源）
-  - 创建基础爬虫类（统一流程：fetch → transform → clean → score → save）
-  - 实现质量评分算法（0-100 分，基于来源、标题、互动数据）
-  - 实现热度评分算法（时间衰减，类似 Hacker News）
-  - 实现自动分类系统（tech/dev/opensource/academic）
-  - 开发 Hacker News 爬虫（官方 API）
-  - 开发 GitHub Trending 爬虫（HTML 解析）
-  - 开发 Dev.to 爬虫（官方 API）
-  - 开发 arXiv 爬虫（XML API，cs.AI 分类）
-  - 创建调度系统（node-cron）
-  - 配置定时任务（每 2-6 小时自动运行）
-- ✅ 新增 'opensource' 分类
-  - 数据库迁移添加 opensource 到 category 约束
-  - 更新分类器支持开源项目关键词识别
-  - 更新后端 API 验证逻辑
-  - 更新前端导航和分类标签（4 个分类）
-  - 将 GitHub Trending 文章迁移到 opensource 分类
-- ✅ 配置 Supabase MCP
-  - 创建项目级 .mcp.json 配置文件
-  - 测试 MCP 工具连接
-  - 通过 MCP 执行数据库迁移
-- ✅ 前端数据集成
-  - 配置 Vite 路径别名（@）
-  - 更新 Home.vue 从后端 API 获取真实数据
-  - 实现加载状态、错误处理、空状态
-  - 实现分类切换功能（全部/科技/开发者/开源/学术）
-  - 显示文章来源、发布时间、质量分、互动数据
-  - 格式化相对时间显示
-
-**数据统计**：
-- 数据库文章总数：40 条
-  - opensource: 10 条（GitHub Trending）
-  - dev: 17 条（Dev.to 等）
-  - tech: 12 条（Hacker News 等）
-  - academic: 1 条（arXiv）
-- 4 个爬虫全部测试通过，插入成功率 100%
-
-**今日问题及解决**：
-- ✅ 爬虫 RLS 权限问题 → 使用 service_role key 绕过 RLS
-- ✅ 后端服务器停止运行 → 重启 nodemon 恢复
-- ✅ 前端路径别名未配置 → 添加 Vite resolve.alias 解决
-- ✅ TailwindCSS v4 兼容性问题 → 已在 Day 1 降级到 v3
-
-**明日计划**：
-- 添加更多中文数据源爬虫（掘金、V2EX、少数派、IT之家）
-- 完善前端各分类页面（Tech.vue, Dev.vue, Academic.vue）
-- 实现分页功能
-- 优化前端样式细节
-
----
-
-### 2025-11-19（Week 2, Day 2）
-
-**今日完成**：
-- ✅ Search 页面 UI 完全重新设计（参考 Google AI Mode）
-  - 完全重写 Search.vue（617 行，现代化设计）
-  - 设计灵感：Google AI Mode 简洁现代风格
-  - **顶部搜索区域**：
-    - 居中大标题："搜索技术资讯"
-    - 大型搜索框，带搜索图标和嵌入式按钮
-    - Backdrop blur 固定顶部导航栏
-  - **芯片式筛选面板**：
-    - 时间范围芯片（全部时间/今天/本周/本月）
-    - 来源下拉选择（9 个数据源）
-    - 分类下拉选择（6 个分类）
-    - 激活筛选标签（可点击 X 移除）
-  - **骨架屏加载动画**：
-    - 5 个骨架卡片占位符
-    - 脉冲动画效果
-    - 模拟真实卡片结构
-  - **文章卡片优化**：
-    - 圆角设计（rounded-2xl）
-    - Hover 效果（边框颜色 + 阴影）
-    - 来源徽章和分类标签色彩编码
-    - 改进的视觉层次结构
-  - **AI 功能视觉升级**：
-    - 渐变 AI 按钮（紫色→蓝色→青色）
-    - AI 摘要面板带渐变背景
-    - AI 徽章（紫蓝渐变）
-  - **现代分页设计**：
-    - 圆角按钮（rounded-xl）
-    - 图标 + 文字导航
-    - Hover 和 Active 状态
-  - **状态页面改进**：
-    - 错误状态带图标和颜色
-    - 空状态带搜索图标
-    - 友好的提示信息
-- ✅ 后端 API 测试通过
-  - 搜索 API：`/api/articles/search` 工作正常
-  - 时间范围筛选：今天/本周/本月 逻辑正确
-  - 来源筛选：所有 8 个数据源可筛选
-  - 分类筛选：5 个分类筛选正常
-- ✅ 前后端项目启动
-  - 后端：Port 3000（Node.js v22.21.1）
-  - 前端：Port 5174（Vite）
-  - 已知问题：autoAI fetch 错误（不影响 API 端点）
-
-**设计亮点**（Google AI Mode 风格）：
-- 极简色彩：灰色为主，蓝色、紫色点缀
-- 慷慨留白：居中布局，最大宽度限制
-- 圆角设计：统一使用 rounded-xl/2xl
-- 微妙动画：hover 过渡、active 缩放
-- 芯片式交互：现代筛选 UI 范式
-- 渐变装饰：AI 功能用渐变强调
-- 专业字体：保持 Geist 字体
-
-**技术实现**：
-- TailwindCSS 工具类：`@apply` 自定义类
-- 响应式对象：筛选状态管理
-- Vue 3 组合式 API：`ref`、`watch`、`onMounted`
-- URL 参数同步：`route.query` 监听
-- 条件类绑定：`:class` 动态样式
-- SVG 图标：内联 SVG 用于图标
-- 脉冲动画：`@keyframes` CSS 动画
-- Backdrop blur：`bg-white/80 backdrop-blur-md`
-
-**文件修改**：
-- 修改：`frontend/src/views/Search.vue` (617 lines)
-  - 完全重写，现代化设计
-  - 新增骨架屏组件
-  - 芯片式筛选 UI
-  - 改进的卡片样式
-  - 所有自定义 CSS 类
-
-**验证状态**：
-- 后端测试：✅ 全部通过（curl 测试）
-- 前端测试：⏳ 等待浏览器验证
-- 服务器状态：✅ 运行中（3000 + 5174）
-
-**下一步计划**：
-- 在浏览器中测试 Search UI 交互
-- 验证所有筛选功能正常工作
-- 检查响应式设计（如需要）
-- 继续优化其他页面（Tech、Dev、Product 等）
-
----
-
-### 2025-11-17（Week 1, Day 4）
-
-**今日完成**：
-- ✅ Node.js 环境修复
-  - 修复 Node.js v25.1.0 fetch bug（undici 严重 bug 导致 Supabase 调用失败）
-  - 降级到 Node.js v22.21.1（通过 Homebrew）
-  - 恢复 autoAI 服务正常运行
-  - 验证所有 API 正常工作
-- ✅ 搜索功能完整实现
-  - 后端搜索 API（`articleService.searchArticles`）
-    - 支持标题和摘要全文搜索（ilike 模式）
-    - 支持分类筛选
-    - 分页功能（page + limit）
-    - 按创建时间倒序排序
-  - 前端搜索页面（`Search.vue`，349 行）
-    - 搜索表单和提交
-    - URL 参数支持（`/search?q=keyword`）
-    - 搜索结果展示（文章卡片）
-    - AI 摘要展开/收起功能
-    - 分页控制（上一页/下一页）
-    - 加载/错误/空状态处理
-    - 结果统计显示
-  - 修复前端 API 调用（GET 方法，正确 URL）
-- ✅ 协作文档创建
-  - 创建 `PROJECT_RULES.md` 协作规则文档
-  - 为 qoder 和 Cline (GLM) 提供完整指南
-  - 内容包括：
-    - 项目概述和技术栈详解
-    - Git 工作流程（强调使用 Git 避免错误）
-    - 代码规范（JavaScript、Vue 3、CSS）
-    - 开发环境配置（Node.js v22 要求）
-    - 关键文件说明（逐个解释作用）
-    - 常见陷阱（Node.js v25 bug、API 不匹配等 6 个问题）
-    - 协作规则（职责分工、检查清单、禁止操作）
-    - 测试与部署指南
-
-**数据统计**：
-- 数据库文章总数：**233 条**（相比昨日 +101 条）
-- autoAI 服务正常运行，已为多篇文章生成 AI 摘要
-- 搜索功能测试：关键词 "AI" 返回 75 条结果
-
-**今日问题及解决**：
-- ✅ Node.js v25 fetch bug
-  - 症状：`TypeError: fetch failed at node:internal/deps/undici/undici:15845:13`
-  - 影响：所有 Supabase JS 客户端操作失败
-  - 测试：curl 成功 ✅、axios 成功 ✅、Supabase JS 失败 ❌
-  - 解决：`brew install node@22` → `brew unlink node` → `brew link node@22 --force`
-  - 结果：autoAI 服务恢复，API 全部正常
-- ✅ 前端 API 方法不匹配
-  - 问题：`searchArticles` 使用 POST，后端期望 GET
-  - 解决：修改 `frontend/src/api/article.js` 为 GET + params
-  - 结果：搜索功能正常工作
-
-**技术要点**：
-- Node.js v25.1.0 的 undici (内置 fetch) 存在严重 bug，必须使用 v22 LTS
-- Supabase ilike 操作符：PostgreSQL 大小写不敏感搜索
-- Vue 3 URL 参数监听：`watch(() => route.query.q)`
-- AI 摘要展示：使用响应式对象 `showAISummary` 控制展开/收起
-
-**明日计划**：
-- 继续方案二（功能扩展）：
-  - 添加高级筛选功能（时间范围、来源、分类组合）
-  - 实现文章收藏功能
-  - 创建法律合规页面（版权声明、服务条款等）
-- 优化搜索体验（关键词高亮、搜索建议）
-- 完善 Product 分类页面
-
----
-
-### 2025-11-16（Week 1, Day 3）
-
-**今日完成**：
-- ✅ 新增第 5 个数据源：AIBase（AI 产品聚合平台）
-  - 使用 Puppeteer 处理 JavaScript 渲染网站
-  - 实现完整的数据提取和转换
-  - 爬取 AI 工具和产品信息
-  - 自动分类到 'product' 类别
-  - 配置每 4 小时运行一次
-- ✅ 新增第 6 个数据源：Product Hunt（每日产品推荐）
-  - 集成 Product Hunt GraphQL API v2
-  - 实现 OAuth Client Credentials 认证流程
-  - 动态获取 access token
-  - 爬取每日热门产品（按投票数排序）
-  - 提取产品信息、制作者、主题标签
-  - 配置每 3 小时运行一次
-  - 自动分类到 'product' 类别
-- ✅ 新增 'product' 分类
-  - 数据库迁移添加 product 到 category 约束
-  - 更新分类器支持产品关键词识别
-  - 更新后端 API 验证逻辑
-  - 所有 6 个爬虫全部集成到调度器
-- ✅ 数据库更新
-  - 添加 'AIBase' 和 'Product Hunt' 到 source 约束
-  - 添加 'product' 到 category 约束
-
-**数据统计**：
-- 数据库文章总数：**132 条**
-  - dev: 48 条（5 个来源）
-  - tech: 41 条（6 个来源）
-  - opensource: 24 条（5 个来源）
-  - **product: 15 条（2 个来源：AIBase, Product Hunt）**
-  - academic: 4 条（2 个来源）
-- **6 个数据源全部运行正常**：
-  - Hacker News（API）- 每 2 小时
-  - GitHub Trending（HTML）- 每 4 小时
-  - Dev.to（API）- 每 2 小时
-  - arXiv（XML API）- 每 6 小时
-  - AIBase（Puppeteer）- 每 4 小时
-  - Product Hunt（GraphQL API）- 每 3 小时
-- 调度器稳定运行，自动抓取和清理系统正常
-
-**今日问题及解决**：
-- ✅ Product Hunt 认证失败（401 错误）
-  - 原因：Developer Token 不能直接使用
-  - 解决：改用 OAuth Client Credentials 流程，动态获取 access token
-- ✅ GraphQL 查询结构错误
-  - 原因：`makers` 字段结构判断错误（不需要 edges 包装）
-  - 解决：修正查询结构为 `makers { name }`
-- ✅ AIBase 数据提取问题
-  - 原因：网站使用 JavaScript 渲染
-  - 解决：使用 Puppeteer 替代 Cheerio
-
-**技术要点**：
-- **API 类型总结**：
-  - 官方 REST API：Hacker News, Dev.to
-  - GraphQL API：Product Hunt
-  - XML API：arXiv
-  - HTML 解析：GitHub Trending（Cheerio）
-  - JavaScript 渲染：AIBase（Puppeteer）
-- OAuth 2.0 Client Credentials 认证流程实现
-- Puppeteer 无头浏览器爬虫技术
-
-**明日计划**：
-- 完善前端各分类页面（添加 Product 分类页面）
-- 优化前端样式和用户体验
-- 实现搜索功能
-- 考虑添加更多数据源（可选）
-
----
-
-## ⚠️ 问题记录
-
-### 未解决问题
-*暂无*
-
-### 已解决问题
-*暂无*
-
----
-
-## 📊 周报总结
-
-### Week 1 总结（2025-11-15 ~ 2025-11-22）
-**完成情况**：⬜
-**主要成果**：
--
-
-**遇到问题**：
--
-
-**下周计划**：
--
-
----
-
-### Week 2 总结（2025-11-23 ~ 2025-11-30）
-**完成情况**：⬜
-**主要成果**：
-
-
-**遇到问题**：
-
-
-**下周计划**：
-
-
----
-
-### Week 3 总结（2025-12-01 ~ 2025-12-08）
-**完成情况**：⬜
-**主要成果**：
-
-
-**遇到问题**：
-
-
-**下周计划**：
-
-
----
-
-### Week 4 总结（2025-12-09 ~ 2025-12-15）
-**完成情况**：⬜
-**主要成果**：
-
-
-**遇到问题**：
-
-
-**项目回顾**：
-
-
----
-
-## 🎯 检查清单
-
-### MVP 上线前检查
-- [ ] 所有核心功能正常
-- [ ] 没有明显 bug
-- [ ] 至少 8 个数据源稳定运行
-- [ ] 页面响应速度 < 3 秒
-- [ ] 移动端适配完成
-- [ ] 部署成功可访问
-- [ ] README 文档完善
-- [ ] 代码提交到 GitHub
-
-### 后续优化检查
-- [ ] 用户反馈收集
-- [ ] 性能优化
-- [ ] 增加新数据源
-- [ ] UI/UX 改进
-- [ ] 考虑二期功能
-
----
-
-## 📚 参考资源
-
-### 学习资料
-- **Vue 3**：https://cn.vuejs.org/
-- **Vite**：https://cn.vitejs.dev/
-- **Express**：https://expressjs.com/
-- **MongoDB**：https://www.mongodb.com/docs/
-- **TailwindCSS**：https://tailwindcss.com/
-
-### 部署教程
-- **Vercel**：https://vercel.com/docs
-- **Railway**：https://docs.railway.app/
-- **GitHub Actions**：https://docs.github.com/actions
-
-### 数据源文档
-- **GitHub API**：https://docs.github.com/rest
-- **Hacker News API**：https://github.com/HackerNews/API
-- **Dev.to API**：https://developers.forem.com/api
-- **arXiv API**：https://arxiv.org/help/api
-
----
-
-**最后更新**：2025-11-15
-**文档版本**：v1.0
+**许可证**: MIT License
+**作者**: Johnny
+**最后更新**: 2026-01-01

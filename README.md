@@ -1,133 +1,165 @@
-# Fast Info
+# 🗞️ Fast Info - 卖报员 Agent
 
-> 专注高质量信息的聚合平台
+> 你的智能技术资讯助手 | Your Intelligent Tech News Agent
 
----
+Fast Info 是一个技术资讯聚合平台，核心是"卖报员 Agent"——一个具备工具调用能力的智能体，能够理解你的需求并从文章数据库中精准推荐相关内容。
 
-## 🤖 给 AI 助手的重要提示
+## ✨ 特性
 
-**如果你是新加入的 AI 助手，请立即阅读以下文档：**
+- 🤖 **智能对话** - 自然语言交互，理解你的信息需求
+- 🔧 **工具调用** - 搜索、筛选、统计等多种工具
+- 📊 **多源聚合** - Hacker News、GitHub、Dev.to、Product Hunt 等
+- 📱 **推送通知** - Telegram 每日摘要推送
+- 🔌 **MCP 支持** - 可集成到各种 AI 客户端
 
-1. **[AI_GUIDE.md](./AI_GUIDE.md)** ⭐⭐⭐⭐⭐ - **必读**：AI 助手工作指南
-2. **[PROJECT_PLAN.md](./PROJECT_PLAN.md)** ⭐⭐⭐⭐⭐ - **必读**：项目策划书
-3. **[WORKFLOW.md](./WORKFLOW.md)** ⭐⭐⭐⭐⭐ - **必读**：开发工作流和任务清单
+## 🚀 快速开始
 
-**核心规则**：
-- ⚠️ 重大决策必须询问用户 Johnny
-- 🔐 API 密钥、账号密码、MCP 配置等让用户自己填写
-- 💰 涉及成本的决策提前说明
-- 📋 使用 TodoWrite 工具记录进度
-
-详见 [AI_GUIDE.md](./AI_GUIDE.md)
-
----
-
-## 项目简介
-
-Fast Info 是一个面向技术爱好者和学生的新闻聚合平台，专注于科技、开发者和学术领域的高质量信息。通过智能筛选和分类展示，帮助用户高效获取有价值的资讯。
-
-## 核心特性
-
-- 🎯 **质量优先**：只聚合高质量信息源，过滤低价值内容
-- 🔍 **智能分类**：科技、开发者、学术三大领域精准分类
-- 🎨 **现代化设计**：简洁美观的界面，流畅的交互体验
-- 📱 **响应式布局**：完美适配桌面、平板和手机
-- 👤 **个性化订阅**：自定义关注的信息源和分类
-- 🔖 **收藏阅读**：支持收藏和稍后阅读功能
-
-## 技术栈
-
-### 前端
-- Vue 3 - 渐进式框架
-- Vite - 现代化构建工具
-- Vue Router - 路由管理
-- Pinia - 状态管理
-- Naive UI - UI 组件库
-- TailwindCSS - 原子化 CSS
-
-### 后端
-- Node.js - 运行环境
-- Express - Web 框架
-- MongoDB - 数据库
-- Axios - HTTP 客户端
-
-## 项目结构
-
-```
-Fast Info/
-├── frontend/              # Vue 3 前端
-│   ├── src/
-│   │   ├── views/        # 页面
-│   │   ├── components/   # 组件
-│   │   ├── api/          # API 接口
-│   │   ├── store/        # 状态管理
-│   │   └── router/       # 路由配置
-│   └── package.json
-│
-├── backend/              # Node.js 后端
-│   ├── src/
-│   │   ├── routes/       # 路由
-│   │   ├── controllers/  # 控制器
-│   │   ├── models/       # 数据模型
-│   │   ├── services/     # 业务逻辑
-│   │   └── crawlers/     # 爬虫模块
-│   └── package.json
-│
-├── PROJECT_PLAN.md       # 项目策划书
-├── WORKFLOW.md           # 开发工作流
-└── README.md
-```
-
-## 快速开始
-
-### 前端开发
+### 使用 Docker Compose（推荐）
 
 ```bash
+# 1. 克隆项目
+git clone https://github.com/yourusername/fast-info.git
+cd fast-info
+
+# 2. 配置环境变量
+cp .env.example .env
+# 编辑 .env 填入你的配置
+
+# 3. 启动服务
+docker-compose up -d
+
+# 4. 访问
+# 前端: http://localhost:8080
+# 后端: http://localhost:3000
+```
+
+### 手动部署
+
+```bash
+# 后端
+cd backend
+npm install
+npm run dev
+
+# 前端
 cd frontend
 npm install
 npm run dev
 ```
 
-### 后端开发
+## 📖 使用指南
 
-```bash
-cd backend
-npm install
-npm run dev
+### 对话示例
+
+```
+👤: 有什么 AI 相关的新闻？
+🗞️: 找到 5 篇 AI 相关文章...
+
+👤: 只看今天的
+🗞️: 今天有 2 篇 AI 文章...
+
+👤: 数据库里有多少文章？
+🗞️: 目前共有 233 篇文章，分布在 5 个分类...
 ```
 
-## 开发计划
+### Agent 工具
 
-- [x] Week 1: 项目搭建
-  - [x] 项目策划书
-  - [x] 开发工作流文档
-  - [ ] 前后端项目初始化
-  - [ ] 基础爬虫测试
+| 工具 | 描述 |
+|------|------|
+| `search_articles` | 关键词搜索 |
+| `filter_by_category` | 按分类筛选 |
+| `filter_by_date` | 按时间筛选 |
+| `filter_by_source` | 按来源筛选 |
+| `get_trending` | 获取热门文章 |
+| `get_daily_digest` | 今日摘要 |
+| `get_stats` | 数据统计 |
 
-- [ ] Week 2: 核心功能
-- [ ] Week 3: 功能完善
-- [ ] Week 4: 测试部署
+## 🏗️ 架构
 
-详细计划见 [WORKFLOW.md](./WORKFLOW.md)
+```
+┌─────────────────────────────────────────┐
+│           Frontend (Vue 3)              │
+│  Chat UI │ Article List │ Settings      │
+└─────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────┐
+│        Backend (Node.js/Express)        │
+│  Chat API │ Article API │ Push Service  │
+│                 │                       │
+│      Newsboy Agent (Tool Calling)       │
+└─────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────┐
+│         MCP Server (FastMCP)            │
+└─────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────┐
+│      PostgreSQL (Docker/Self-hosted)    │
+└─────────────────────────────────────────┘
+```
 
-## 文档
+## 🔧 配置
 
-### 核心文档
-- **[AI_GUIDE.md](./AI_GUIDE.md)** - 🤖 AI 助手工作指南（新 AI 必读）
-- **[PROJECT_PLAN.md](./PROJECT_PLAN.md)** - 📋 项目策划书（完整规划）
-- **[WORKFLOW.md](./WORKFLOW.md)** - 📝 开发工作流（任务清单和进度）
+### 环境变量
 
-### 其他文档
-- README.md - 本文件，项目说明
+| 变量 | 描述 | 必填 |
+|------|------|------|
+| `DB_PASSWORD` | 数据库密码 | ✅ |
+| `DOUBAO_API_KEY` | 豆包 API Key | ✅ |
+| `DOUBAO_MODEL` | 豆包模型 ID | ✅ |
+| `TELEGRAM_BOT_TOKEN` | Telegram Bot Token | ❌ |
 
-## 作者
+### MCP 集成
 
-Johnny - 大二学生
+在你的 AI 客户端中添加：
 
-## 许可证
+```json
+{
+  "mcpServers": {
+    "fastinfo": {
+      "command": "python",
+      "args": ["path/to/mcp_server/server.py"]
+    }
+  }
+}
+```
+
+## 📁 项目结构
+
+```
+fast-info/
+├── backend/           # Node.js 后端
+│   ├── src/
+│   │   ├── db/        # 数据库连接
+│   │   ├── services/  # 业务逻辑
+│   │   │   ├── tools/ # Agent 工具
+│   │   │   └── newsboyAgent.js
+│   │   └── routes/    # API 路由
+│   └── server.js
+├── frontend/          # Vue 3 前端
+│   └── src/
+│       ├── views/
+│       │   └── ChatView.vue
+│       └── components/
+├── mcp_server/        # MCP Server
+│   └── server.py
+├── scripts/           # 脚本
+│   ├── init.sql       # 数据库初始化
+│   └── migrate.js     # 数据迁移
+└── docker-compose.yml
+```
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📄 License
 
 MIT License
 
 ---
 
-**开发中...** 🚀
+Made with ❤️ by Johnny

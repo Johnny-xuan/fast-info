@@ -14,8 +14,9 @@ class ArticleService {
    * @param {number} options.page - 页码
    * @param {number} options.limit - 每页数量
    * @param {string} options.source - 数据源（可选）
+   * @param {string} options.timeRange - 时间范围：today | week | month | all（可选）
    */
-  async getArticles({ category = 'all', sort = 'latest', page = 1, limit = 20, source }) {
+  async getArticles({ category = 'all', sort = 'latest', page = 1, limit = 20, source, timeRange }) {
     let query = supabase
       .from('articles')
       .select('*', { count: 'exact' })
@@ -29,6 +30,27 @@ class ArticleService {
     // 来源筛选
     if (source) {
       query = query.eq('source', source)
+    }
+
+    // 时间范围筛选
+    if (timeRange && timeRange !== 'all') {
+      const now = new Date()
+      let startDate
+
+      if (timeRange === 'today') {
+        // 今天：从今天 00:00:00 开始
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      } else if (timeRange === 'week') {
+        // 本周：过去 7 天
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      } else if (timeRange === 'month') {
+        // 本月：过去 30 天
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      }
+
+      if (startDate) {
+        query = query.gte('published_at', startDate.toISOString())
+      }
     }
 
     // 排序
@@ -113,8 +135,10 @@ class ArticleService {
    * @param {string} options.category - 分类（可选）
    * @param {number} options.page - 页码
    * @param {number} options.limit - 每页数量
+   * @param {string} options.source - 数据源（可选）
+   * @param {string} options.timeRange - 时间范围（可选）
    */
-  async searchArticles({ q, category, page = 1, limit = 20 }) {
+  async searchArticles({ q, category, page = 1, limit = 20, source, timeRange }) {
     let query = supabase
       .from('articles')
       .select('*', { count: 'exact' })
@@ -124,6 +148,29 @@ class ArticleService {
     // 分类筛选
     if (category && category !== 'all') {
       query = query.eq('category', category)
+    }
+
+    // 来源筛选
+    if (source) {
+      query = query.eq('source', source)
+    }
+
+    // 时间范围筛选
+    if (timeRange && timeRange !== 'all') {
+      const now = new Date()
+      let startDate
+
+      if (timeRange === 'today') {
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      } else if (timeRange === 'week') {
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      } else if (timeRange === 'month') {
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      }
+
+      if (startDate) {
+        query = query.gte('published_at', startDate.toISOString())
+      }
     }
 
     // 排序

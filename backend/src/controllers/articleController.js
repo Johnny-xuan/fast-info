@@ -16,7 +16,8 @@ exports.getArticles = async (req, res) => {
       sort = 'latest',
       page = 1,
       limit = 20,
-      source
+      source,
+      timeRange // 新增：时间范围筛选（today, week, month, all）
     } = req.query
 
     // 验证分类
@@ -32,7 +33,8 @@ exports.getArticles = async (req, res) => {
       sort,
       page: parseInt(page),
       limit: parseInt(limit),
-      source
+      source,
+      timeRange // 传递时间范围参数
     })
 
     res.json({
@@ -128,7 +130,9 @@ exports.searchArticles = async (req, res) => {
       q,
       category,
       page = 1,
-      limit = 20
+      limit = 20,
+      source, // 新增：来源筛选
+      timeRange // 新增：时间范围筛选
     } = req.query
 
     if (!q) {
@@ -142,7 +146,9 @@ exports.searchArticles = async (req, res) => {
       q,
       category,
       page: parseInt(page),
-      limit: parseInt(limit)
+      limit: parseInt(limit),
+      source, // 传递来源参数
+      timeRange // 传递时间范围参数
     })
 
     res.json({

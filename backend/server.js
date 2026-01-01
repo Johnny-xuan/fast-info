@@ -8,8 +8,21 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3000
 
-// 初始化 Supabase 客户端（通过引入配置文件自动初始化）
-require('./src/config/supabase')
+// 数据库配置：优先使用 PostgreSQL，降级到 Supabase
+const usePostgres = process.env.DB_HOST || process.env.USE_POSTGRES === 'true'
+if (usePostgres) {
+  const db = require('./src/db')
+  db.healthCheck().then(result => {
+    if (result.healthy) {
+      console.log('✅ PostgreSQL connected')
+    } else {
+      console.error('❌ PostgreSQL connection failed:', result.error)
+    }
+  })
+} else {
+  // 降级到 Supabase
+  require('./src/config/supabase')
+}
 
 // 中间件
 app.use(cors())
@@ -34,12 +47,16 @@ app.get('/health', (req, res) => {
 // API 路由
 app.get('/api', (req, res) => {
   res.json({
-    message: 'Fast Info API',
-    version: '1.0.0',
+    message: 'Fast Info API - 卖报员 Agent',
+    version: '2.0.0',
     endpoints: {
       articles: '/api/articles',
       articlesHot: '/api/articles/hot',
       articlesSearch: '/api/articles/search',
+      chat: '/api/chat',
+      chatSuggestions: '/api/chat/suggestions',
+      pushConfigs: '/api/push/configs',
+      pushDigest: '/api/push/digest',
       aiStats: '/api/ai/stats',
       aiBatchGenerate: '/api/ai/batch-generate',
       aiGenerateSummary: '/api/ai/generate-summary/:id',
@@ -55,6 +72,14 @@ app.use('/api/articles', articleRoutes)
 // 挂载 AI 路由
 const aiRoutes = require('./src/routes/ai')
 app.use('/api/ai', aiRoutes)
+
+// 挂载 Chat 路由（卖报员 Agent）
+const chatRoutes = require('./src/routes/chat')
+app.use('/api/chat', chatRoutes)
+
+// 挂载推送路由
+const pushRoutes = require('./src/routes/push')
+app.use('/api/push', pushRoutes)
 
 // 错误处理中间件
 app.use((err, req, res, next) => {
@@ -95,6 +120,12 @@ app.listen(PORT, () => {
   // 启动自动 AI 摘要生成服务
   const autoAIService = require('./src/services/autoAIService')
   autoAIService.start()
+  
+  // 启动每日摘要推送任务
+  if (process.env.ENABLE_PUSH === 'true') {
+    const dailyDigest = require('./src/jobs/dailyDigest')
+    dailyDigest.start()
+  }
 })
 
 // 优雅关闭

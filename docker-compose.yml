@@ -1,0 +1,87 @@
+# Fast Info - Docker Compose 配置
+# 一键部署：docker-compose up -d
+
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: fastinfo-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-fastinfo}
+      POSTGRES_USER: ${DB_USER:-fastinfo}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-fastinfo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 后端服务
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fastinfo-backend
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-fastinfo}
+      - DB_USER=${DB_USER:-fastinfo}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DOUBAO_API_KEY=${DOUBAO_API_KEY}
+      - DOUBAO_API_BASE=${DOUBAO_API_BASE:-https://ark.cn-beijing.volces.com/api/v3}
+      - DOUBAO_MODEL=${DOUBAO_MODEL}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - ENABLE_PUSH=${ENABLE_PUSH:-false}
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE=${VITE_API_BASE:-http://localhost:3000}
+    container_name: fastinfo-frontend
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # MCP Server (可选)
+  mcp-server:
+    build:
+      context: ./mcp_server
+      dockerfile: Dockerfile
+    container_name: fastinfo-mcp
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-fastinfo}
+      - DB_USER=${DB_USER:-fastinfo}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - mcp
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -8,6 +8,12 @@ const routes = [
     meta: { title: 'Fast Info - 首页' }
   },
   {
+    path: '/chat',
+    name: 'Chat',
+    component: () => import('../views/ChatView.vue'),
+    meta: { title: 'Fast Info - 卖报员' }
+  },
+  {
     path: '/tech',
     name: 'Tech',
     component: () => import('../views/Tech.vue'),
@@ -24,6 +30,12 @@ const routes = [
     name: 'Academic',
     component: () => import('../views/Academic.vue'),
     meta: { title: 'Fast Info - 学术研究' }
+  },
+  {
+    path: '/product',
+    name: 'Product',
+    component: () => import('../views/Product.vue'),
+    meta: { title: 'Fast Info - 产品动态' }
   },
   {
     path: '/search',

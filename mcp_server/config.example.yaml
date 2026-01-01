@@ -1,0 +1,15 @@
+# Fast Info MCP Server 配置示例
+# 复制此文件为 config.yaml 并修改配置
+
+# 数据库配置
+database:
+  host: localhost
+  port: 5432
+  name: fastinfo
+  user: fastinfo
+  password: your_password_here
+
+# 服务配置
+server:
+  name: FastInfo Newsboy
+  version: 1.0.0

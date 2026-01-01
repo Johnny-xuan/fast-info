@@ -38,14 +38,14 @@ export function getCategories() {
 
 /**
  * 搜索文章
- * @param {Object} data - 搜索参数
+ * @param {Object} params - 搜索参数
  * @returns {Promise}
  */
-export function searchArticles(data) {
+export function searchArticles(params) {
   return request({
-    url: '/search',
-    method: 'post',
-    data
+    url: '/articles/search',
+    method: 'get',
+    params
   })
 }
 

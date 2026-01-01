@@ -1,19 +1,26 @@
 {
-  "name": "backend",
-  "version": "1.1.0",
-  "description": "",
-  "main": "index.js",
+  "name": "fast-info-backend",
+  "version": "2.0.0",
+  "description": "Fast Info 卖报员 Agent - 技术资讯智能检索",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
     "crawler": "node src/crawlers/scheduler.js",
     "crawler:now": "RUN_IMMEDIATELY=true node src/crawlers/scheduler.js",
     "crawler:test": "node src/crawlers/test.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrate": "node ../scripts/migrate.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "news",
+    "agent",
+    "ai",
+    "tech"
+  ],
+  "author": "Johnny",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "@supabase/supabase-js": "^2.81.1",
@@ -24,12 +31,16 @@
     "express": "^5.1.0",
     "joi": "^18.0.1",
     "node-cron": "^4.2.1",
+    "pg": "^8.16.3",
     "puppeteer": "^24.30.0",
     "rss-parser": "^3.13.0",
+    "uuid": "^11.1.0",
     "winston": "^3.18.3",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "supertest": "^7.0.0",
+    "vitest": "^3.2.4"
   }
 }

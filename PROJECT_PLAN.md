@@ -1,537 +1,320 @@
-# Fast Info - 高质量新闻聚合平台 项目策划书
+# Fast Info 项目策划书
 
-> **学生版本** - 成本控制在 ¥200/月以内
+> **卖报员 Agent** - 技术资讯智能检索平台
+> **版本**: v2.0.0 | **更新日期**: 2026-01-01
+
+---
 
 ## 📋 项目概述
 
-### 项目名称
-**Fast Info** - 专注高质量信息的聚合平台
-
 ### 项目定位
-一个面向技术爱好者和学生的新闻聚合平台，专注于科技、开发者和学术领域的高质量信息，通过智能筛选和分类展示，帮助用户高效获取有价值的资讯。
 
-### 核心理念
-- **质量优先**：只聚合高质量信息源，过滤低价值内容
-- **专业聚焦**：专注科技、开发者、学术三大领域
-- **个性化**：支持用户自定义订阅和筛选
-- **极简体验**：清爽的界面，高效的阅读体验
-- **低成本运营**：充分利用免费资源，控制成本
+**Fast Info** 是一个面向技术爱好者和学生的智能资讯检索平台，通过「卖报员 Agent」帮助用户快速找到有价值的技术资讯。
 
----
+- **核心价值**: 知道库里有什么文章、了解文章内容、理解用户需求、精准推荐
+- **产品形态**: Web 界面 + 对话式 Agent + 推送通知
+- **技术路线**: Node.js + PostgreSQL + 豆包大模型
 
-## 🎯 项目目标
+### 核心特性
 
-### 短期目标（MVP - 1个月）
-1. 完成核心信息源的数据采集（8-10个高质量源）
-2. 实现基础的 Web 界面（时间线 + 分类展示）
-3. 完成数据的清洗、去重和基础排序
-4. 部署到免费平台，可公开访问
-
-### 中期目标（2-3个月）
-1. 新增用户系统和个性化订阅功能
-2. 实现收藏、稍后阅读等功能
-3. 优化推荐算法
-4. 增加更多信息源（目标 15-20 个）
-
-### 长期目标（3个月+）
-1. AI 智能摘要（如果成本允许）
-2. 用户社区功能
-3. 浏览器插件
-4. 移动端优化
+| 特性 | 描述 | 状态 |
+|------|------|------|
+| 多源聚合 | HackerNews、GitHub Trending、Dev.to、V2EX、掘金、arXiv 等 | ✅ 已完成 |
+| AI 摘要 | 自动生成文章中文摘要 | ✅ 已完成 |
+| 对话检索 | 卖报员 Agent 支持自然语言查询 | ✅ 已完成 |
+| 推送通知 | Telegram 每日摘要推送 | ✅ 已完成 |
+| 自建数据库 | PostgreSQL 部署，支持全文搜索 | ✅ 已完成 |
 
 ---
 
-## 🗂️ 功能规划
+## 🏗️ 技术架构
 
-### 一期功能（MVP - 重点）
+### 整体架构
 
-#### 1. 数据采集模块
-
-**信息源列表**（优先选择有 API 或 RSS 的源，降低爬虫难度）：
-
-**科技资讯类（3个）**
-- 少数派 RSS - 数字生活方式
-- IT之家 RSS - IT资讯
-- 虎嗅 RSS - 商业科技
-
-**开发者资讯类（5个）**
-- GitHub Trending API - 热门开源项目
-- Hacker News API - 技术讨论
-- Dev.to API - 开发者博客
-- 掘金 API - 中文技术社区
-- V2EX API - 技术讨论
-
-**学术研究类（2个）**
-- arXiv API - 学术论文
-- 知乎热榜 API - 优质内容
-
-**技术方案**：
-- 优先使用官方 API（免费，稳定）
-- 其次使用 RSS 订阅（简单，可靠）
-- 最后才考虑网页爬虫（复杂，易被封）
-
-#### 2. 数据处理模块
-
-**处理流程**：
-1. 数据标准化（统一格式）
-2. 基础去重（URL 去重）
-3. 简单评分（来源权重 + 时效性）
-4. 自动分类（基于来源）
-
-**评分算法（简化版）**：
 ```
-质量分 = 来源权重(60%) + 时效性(40%)
+┌─────────────────────────────────────────────────────────────┐
+│                        用户层                                │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │  Web 前端     │  │  对话界面     │  │  Telegram    │      │
+│  │  (Vue 3)     │  │  (Agent UI)  │  │  Bot         │      │
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                        API 层                                │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  Express.js Server (Node.js v20)                     │   │
+│  │  /api/articles  /api/chat  /api/ai  /api/push       │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                        服务层                                │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │文章服务  │  │Agent服务 │  │AI服务    │  │推送服务  │   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                        数据层                                │
+│  ┌─────────────────────┐  ┌─────────────────────────────┐ │
+│  │  PostgreSQL          │  │  豆包大模型 API              │ │
+│  │  - 文章表            │  │  - 摘要生成                 │ │
+│  │  - 会话表            │  │  - Agent 推理               │ │
+│  │  - 推送配置表        │  │                             │ │
+│  └─────────────────────┘  └─────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-#### 3. Web 前端界面
+### 技术栈
 
-**页面结构**（MVP 最小化）：
+#### 前端
+- **Vue 3** - Composition API + `<script setup>`
+- **Vite** - 构建工具
+- **Tailwind CSS** - 原子化样式
+- **Naive UI** - UI 组件库
+- **Axios** - HTTP 客户端
 
-**首页**
-- 顶部导航：Logo + 分类切换 + 搜索框
-- 主内容区：文章卡片列表
-- 简单的加载更多（无限滚动或分页）
+#### 后端
+- **Node.js v20** - 运行环境
+- **Express.js** - Web 框架
+- **PostgreSQL** - 主数据库（自建）
+- **Supabase** - 备用数据库（降级方案）
+- **pg (node-postgres)** - PostgreSQL 客户端
 
-**分类页**
-- 科技、开发者、学术三个主分类
-- 按时间倒序展示
-
-**搜索页**
-- 简单的关键词搜索
-- 按标题和摘要搜索
-
-**文章卡片设计**：
-```
-┌─────────────────────────────────┐
-│ [来源] 标题                       │
-│ ────────────────────────────    │
-│ 摘要内容（前100字）...            │
-│ [时间] [分类] [查看原文]          │
-└─────────────────────────────────┘
-```
-
-#### 4. 后端 API（简化版）
-
-**核心接口**：
-```
-GET  /api/articles          # 获取文章列表
-GET  /api/articles/:id      # 获取文章详情
-GET  /api/categories        # 获取分类列表
-POST /api/search            # 搜索
-```
-
-### 二期功能（2-3个月后）
-
-#### 5. 用户系统（简化版）
-- 邮箱注册/登录
-- 基础资料管理
-- 订阅设置
-
-#### 6. 个性化功能
-- 收藏文章
-- 稍后阅读
-- 订阅管理
+#### AI & 外部服务
+- **豆包大模型** - 摘要生成 + Agent 推理
+- **Telegram Bot API** - 消息推送
 
 ---
 
-## 🏗️ 技术架构（低成本方案）
+## 🗂️ 数据库设计
 
-### 前端技术栈
+### 核心表结构
 
-**核心框架**
-- Vue 3 - 轻量级框架
-- Vite - 快速构建
-- Vue Router - 路由
-- Pinia - 状态管理（可选，简单项目可以不用）
+#### articles - 文章表
+```sql
+CREATE TABLE articles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  url TEXT UNIQUE NOT NULL,
+  summary TEXT,              -- API 摘要或抓取摘要
+  ai_summary TEXT,           -- AI 生成的中文摘要
+  source TEXT NOT NULL,      -- hackernews/github/devto 等
+  category TEXT,             -- tech/dev/academic/product/opensource
+  tags TEXT[],
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  hot_score INTEGER DEFAULT 0,
+  ai_status TEXT DEFAULT 'pending',  -- pending/completed/failed
+  CONSTRAINT valid_category CHECK (category IN ('tech', 'dev', 'academic', 'product', 'opensource'))
+);
 
-**UI 框架**
-- Naive UI - 轻量级组件库（推荐）
-- 或者 TailwindCSS - 自己写样式
+CREATE INDEX idx_articles_category ON articles(category);
+CREATE INDEX idx_articles_source ON articles(source);
+CREATE INDEX idx_articles_published_at ON articles(published_at DESC);
+CREATE INDEX idx_articles_hot_score ON articles(hot_score DESC);
+CREATE INDEX idx_articles_ai_status ON articles(ai_status);
+CREATE INDEX idx_articles_title_gin ON articles USING gin(to_tsvector('english', title));
+```
 
-**工具库**
-- Axios - HTTP 请求
-- Day.js - 时间处理（轻量，仅 2KB）
+#### chat_sessions - 会话表
+```sql
+CREATE TABLE chat_sessions (
+  id UUID PRIMARY KEY,
+  messages JSONB DEFAULT '[]'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
 
-### 后端技术栈
+CREATE INDEX idx_chat_sessions_updated_at ON chat_sessions(updated_at DESC);
+```
 
-**方案一：全栈 JavaScript（推荐）**
-- Node.js + Express
-- MongoDB（免费版）
-- 无需学习新语言
-
-**方案二：Serverless（更省钱）**
-- Vercel Serverless Functions
-- Vercel KV (Redis)
-- Vercel Postgres（免费版）
-
-**爬虫相关**
-- Axios - API 调用
-- xml2js - RSS 解析
-- Cheerio - 简单爬虫（备用）
-
-**工具库**
-- node-cron - 定时任务
-- joi - 数据验证
-
-### 💰 部署方案（免费/低成本）
-
-#### 方案一：完全免费（推荐起步）
-
-**前端**
-- Vercel / Netlify - 免费托管
-- 自动 HTTPS
-- 全球 CDN
-- 自动部署（Git 推送即部署）
-
-**后端**
-- Railway / Render 免费版
-- 或 Vercel Serverless Functions
-- 限制：每月有使用限额
-
-**数据库**
-- MongoDB Atlas 免费版（512MB）
-- 或 Supabase 免费版（500MB）
-
-**定时任务**
-- GitHub Actions（免费，每月 2000 分钟）
-- 用于定时触发爬虫
-
-**总成本：¥0/月**
-
-#### 方案二：学生优惠方案（推荐）
-
-**利用 GitHub Student Developer Pack**
-- DigitalOcean：免费 $200 信用额（可用 1 年）
-- Azure：免费 $100 信用额
-- Namecheap：免费 .me 域名 1 年
-- MongoDB Atlas：免费升级版
-
-**配置**
-- DigitalOcean Droplet：$6/月（约 ¥42）
-- MongoDB Atlas 学生版：免费
-- 域名：免费（第一年）
-
-**总成本：¥50/月左右**
-
-#### 方案三：极简方案（纯静态）
-
-**架构**
-- GitHub Actions 定时运行爬虫
-- 生成静态 JSON 文件
-- 前端直接读取 JSON
-- 部署到 GitHub Pages
-
-**优点**
-- 完全免费
-- 维护简单
-- 不需要后端服务器
-
-**缺点**
-- 无法实现用户系统
-- 数据更新需要重新构建
-
-**总成本：¥0/月**
+#### push_configs - 推送配置表
+```sql
+CREATE TABLE push_configs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  chat_id TEXT UNIQUE NOT NULL,  -- Telegram chat_id
+  platform TEXT DEFAULT 'telegram',
+  categories TEXT[] DEFAULT ARRAY['tech', 'dev', 'opensource'],
+  enabled BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
 
 ---
 
-## 📊 数据库设计（简化版）
+## 📊 数据源配置
 
-### MongoDB Collections
+### 已集成数据源
 
-#### 1. articles（文章表）
+| 数据源 | 类型 | 更新频率 | 状态 |
+|--------|------|----------|------|
+| Hacker News | API | 每 2 小时 | ✅ |
+| GitHub Trending | 爬虫 | 每 4 小时 | ✅ |
+| Dev.to | API | 每 2 小时 | ✅ |
+| arXiv | API | 每 6 小时 | ✅ |
+| V2EX | 爬虫 | 每 2 小时 | ✅ |
+| 掘金 | 爬虫 | 每 3 小时 | ✅ |
+
+### 爬虫调度器
+
+位置: [backend/src/crawlers/scheduler.js](backend/src/crawlers/scheduler.js)
+
 ```javascript
-{
-  _id: ObjectId,
-  title: String,              // 标题
-  url: String,                // 原文链接（唯一索引）
-  summary: String,            // 摘要
-  source: {
-    id: String,               // 来源 ID
-    name: String,             // 来源名称
-  },
-  category: String,           // 分类（tech/dev/academic）
-  tags: [String],             // 标签
-  publishedAt: Date,          // 发布时间（索引）
-  createdAt: Date,            // 入库时间
-  score: Number,              // 质量评分
-}
-```
-
-#### 2. users（用户表 - 二期）
-```javascript
-{
-  _id: ObjectId,
-  email: String,              // 邮箱（唯一索引）
-  password: String,           // 加密密码
-  username: String,
-  preferences: {
-    categories: [String],     // 订阅分类
-  },
-  createdAt: Date,
-}
-```
-
-#### 3. user_saves（收藏表 - 二期）
-```javascript
-{
-  _id: ObjectId,
-  userId: ObjectId,           // 用户 ID（索引）
-  articleId: ObjectId,        // 文章 ID
-  type: String,               // save/read_later
-  createdAt: Date,
-}
+// 支持的运行模式
+npm run crawler          # 启动定时调度器
+npm run crawler:now      # 立即运行一次所有爬虫
+npm run crawler:test     # 测试单个爬虫
 ```
 
 ---
 
-## 📈 爬虫策略（简化版）
+## 🤖 卖报员 Agent
 
-### 数据源优先级
+### 核心能力
 
-**优先级 1：官方 API（最推荐）**
-- GitHub Trending API
-- Hacker News API
-- Dev.to API
-- arXiv API
-- 掘金 API
+**位置**: [backend/src/services/newsboyAgent.js](backend/src/services/newsboyAgent.js)
 
-**优先级 2：RSS 订阅**
-- 少数派 RSS
-- IT之家 RSS
-- 虎嗅 RSS
+| 能力 | 描述 | 工具 |
+|------|------|------|
+| 搜索文章 | 关键词搜索 | `search_articles` |
+| 分类筛选 | 按分类获取 | `filter_by_category` |
+| 时间筛选 | 按时间范围获取 | `filter_by_date` |
+| 来源筛选 | 按数据源获取 | `filter_by_source` |
+| 热点获取 | 获取热门文章 | `get_trending` |
+| 数据统计 | 数据库统计信息 | `get_stats` |
 
-**优先级 3：网页爬取（尽量避免）**
-- V2EX（简单结构）
-- 知乎热榜（可能需要反爬处理）
+### API 端点
 
-### 爬取频率（节省资源）
-- 高频源：每 2 小时
-- 低频源：每 6 小时
-- 学术源：每 12 小时
-
-### 实现方案
-
-**方案 A：GitHub Actions 定时任务（推荐）**
-```yaml
-# .github/workflows/crawler.yml
-name: Crawler
-on:
-  schedule:
-    - cron: '0 */2 * * *'  # 每2小时运行
-  workflow_dispatch:        # 手动触发
-
-jobs:
-  crawl:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run crawler
-        run: node crawler.js
-      - name: Update data
-        # 将数据推送到数据库
+```
+POST /api/chat              # 发送消息给 Agent
+GET  /api/chat/suggestions  # 获取快捷建议
+DELETE /api/chat/:sessionId # 清除会话
 ```
 
-**方案 B：轻量级服务器定时任务**
-- 使用 node-cron
-- 部署在 Railway/Render
+---
+
+## 📱 推送通知系统
+
+### 支持平台
+
+- **Telegram Bot** - 已实现
+- Email - 待实现
+
+### 推送类型
+
+| 类型 | 描述 | 状态 |
+|------|------|------|
+| 每日摘要 | 每日定时推送精选文章 | ✅ |
+| 即时推送 | 热点文章即时通知 | ⏳ 开发中 |
+
+### 配置方式
+
+```bash
+# Telegram Bot 配置
+ENABLE_PUSH=true
+TELEGRAM_BOT_TOKEN=your_bot_token
+```
+
+用户通过 Telegram Bot 发送 `/start` 订阅，发送 `/stop` 取消订阅。
 
 ---
 
-## 🎨 UI/UX 设计（简化版）
+## 💰 成本预算
 
-### 设计原则
-- **极简**：减少不必要的装饰
-- **实用**：功能优先于美观
-- **快速**：加载速度优先
+### 月度成本明细
 
-### 色彩方案（简单）
+| 项目 | 服务 | 成本 |
+|------|------|------|
+| 服务器 | 自建 / 云服务器 | ¥0 - ¥50 |
+| 数据库 | PostgreSQL (自建) | ¥0 |
+| AI 服务 | 豆包大模型 | ¥1 - ¥5 |
+| 推送 | Telegram Bot | ¥0 |
+| **总计** | | **¥1 - ¥55/月** |
 
-**浅色模式**
-- 主色：#3B82F6（蓝色）
-- 背景：#FFFFFF
-- 文字：#1F2937
+### AI 成本计算
 
-**暗色模式（可选）**
-- 主色：#60A5FA
-- 背景：#1F2937
-- 文字：#F9FAFB
-
-### 参考网站
-- Hacker News（极简风格）
-- Lobsters（简洁设计）
-- Echo JS（卡片式）
-
----
-
-## 📅 开发计划（4周 MVP）
-
-### Week 1：项目搭建
-- [ ] 前端项目初始化（Vue + Vite）
-- [ ] 后端项目初始化（Node.js + Express）
-- [ ] MongoDB 数据库创建
-- [ ] 基础爬虫测试（2-3个数据源）
-
-### Week 2：核心功能
-- [ ] 完成 5-8 个数据源爬虫
-- [ ] 数据清洗和存储
-- [ ] 后端 API 开发
-- [ ] 前端基础页面
-
-### Week 3：功能完善
-- [ ] 前端完整页面（首页、分类、搜索）
-- [ ] 数据展示和交互
-- [ ] 响应式适配
-- [ ] 基础优化
-
-### Week 4：测试部署
-- [ ] 功能测试
-- [ ] 部署到免费平台
-- [ ] 性能优化
-- [ ] 文档编写
+```
+假设每天生成 50 篇摘要：
+- 每篇约 500 tokens
+- 每天 25,000 tokens
+- 每月 750,000 tokens
+- 豆包价格: ¥0.8/百万 tokens
+- 月成本: ¥0.6
+```
 
 ---
 
-## 💰 成本明细（三个方案）
+## 🚀 快速开始
 
-### 方案 1：完全免费
-| 项目 | 服务商 | 成本 |
-|------|--------|------|
-| 前端托管 | Vercel/Netlify | ¥0 |
-| 后端托管 | Railway/Render | ¥0（有限额）|
-| 数据库 | MongoDB Atlas | ¥0（512MB）|
-| 定时任务 | GitHub Actions | ¥0 |
-| 域名 | 免费子域名 | ¥0 |
-| **总计** | | **¥0/月** |
+### 环境要求
 
-**限制**：
-- 后端每月执行时间有限（Railway 500h/月）
-- 数据库存储有限（512MB，约 10 万条文章）
-- 无自定义域名
+- Node.js v20+
+- PostgreSQL 14+
+- npm 或 yarn
 
-### 方案 2：学生优惠（推荐）
-| 项目 | 服务商 | 成本 |
-|------|--------|------|
-| 服务器 | DigitalOcean学生版 | ¥42/月 |
-| 数据库 | MongoDB Atlas学生版 | ¥0 |
-| 域名 | Namecheap学生版 | ¥0（第一年）|
-| CDN | Cloudflare | ¥0 |
-| **总计** | | **¥42/月** |
+### 本地开发
 
-**如何申请**：
-1. 访问 https://education.github.com/pack
-2. 使用学校邮箱验证学生身份
-3. 获取 Student Developer Pack
-4. 激活各项服务
+```bash
+# 1. 克隆项目
+git clone https://github.com/your-username/fast-info.git
+cd fast-info
 
-### 方案 3：纯静态（最省钱）
-| 项目 | 服务商 | 成本 |
-|------|--------|------|
-| 前端 + 数据 | GitHub Pages | ¥0 |
-| 定时爬虫 | GitHub Actions | ¥0 |
-| **总计** | | **¥0/月** |
+# 2. 后端配置
+cd backend
+cp .env.example .env
+# 编辑 .env 填入配置
+npm install
+npm run dev    # 后端运行在 3000 端口
 
----
+# 3. 前端配置
+cd ../frontend
+cp .env.development.example .env.development
+npm install
+npm run dev    # 前端运行在 5173 端口
 
-## 🎯 成功指标（降低预期）
+# 4. 数据库初始化
+cd ../scripts
+psql -U your_user -d fastinfo -f init.sql
+```
 
-### MVP 阶段目标
-- 稳定运行 1 个月不宕机
-- 收录文章 > 1000 篇
-- 日更新 > 50 篇
-- 页面加载时间 < 3 秒
+### Docker 部署
 
-### 成长阶段目标
-- 月活跃用户 > 100（朋友、同学、社区）
-- 内容质量评分 > 3.5/5.0
-- 系统可用性 > 95%
+```bash
+# 快速启动（包含 PostgreSQL）
+docker-compose up -d
+```
 
 ---
 
-## 📝 技术难点和解决方案
+## 📅 开发计划
 
-### 1. 反爬虫问题
-**问题**：部分网站有反爬虫机制
+### v2.0.0 (当前版本)
 
-**解决**：
-- 优先使用 API 和 RSS
-- 添加合理的请求延迟
-- 失败时记录日志，手动处理
+- [x] 自建 PostgreSQL 数据库
+- [x] 卖报员 Agent 核心功能
+- [x] Telegram 推送通知
+- [x] 多数据源爬虫系统
 
-### 2. 服务器资源有限
-**问题**：免费服务器性能较差
+### v2.1.0 (规划中)
 
-**解决**：
-- 使用缓存减少数据库查询
-- 定时任务在低峰期运行
-- 数据分页加载
-
-### 3. 数据存储限制
-**问题**：免费数据库容量有限
-
-**解决**：
-- 只保留最近 30 天的数据
-- 定期清理过期数据
-- 存储时压缩内容
+- [ ] MCP Server 集成
+- [ ] 邮件推送支持
+- [ ] 用户收藏功能
+- [ ] 高级筛选界面
 
 ---
 
-## 🚀 未来可能性
+## 📚 相关文档
 
-### 短期（如果成本允许）
-- 升级服务器配置
-- 增加更多数据源
-- 添加更多功能
-
-### 长期（毕业/找到工作后）
-- 考虑商业化
-- 开发移动 APP
-- 提供 API 服务
+- [README.md](README.md) - 项目说明
+- [PROJECT_RULES.md](PROJECT_RULES.md) - 开发规范
+- [WORKFLOW.md](WORKFLOW.md) - 工作流程
+- [AI_GUIDE.md](AI_GUIDE.md) - AI 助手指南
 
 ---
 
-## 📚 学习收获
-
-通过这个项目，你可以学到：
-
-**前端**
-- Vue 3 全家桶开发
-- 响应式设计
-- 前端工程化
-
-**后端**
-- Node.js 开发
-- RESTful API 设计
-- 数据库操作
-
-**运维**
-- 服务器部署
-- CI/CD 流程
-- 性能优化
-
-**软技能**
-- 项目管理
-- 问题解决
-- 技术文档编写
-
----
-
-## 📞 项目信息
-
-**项目负责人**：Johnny（大二学生）
-**预算**：¥200/月以内
-**开始日期**：2025-11-15
-**预计完成时间**：2025-12-15（MVP）
-
----
-
-## 🎓 给学生的建议
-
-1. **从小做起**：先完成 MVP，不要追求完美
-2. **利用免费资源**：GitHub Student Pack 很香
-3. **记录过程**：写博客分享经验，可以写进简历
-4. **开源项目**：放到 GitHub，展示给面试官
-5. **持续迭代**：慢慢优化，不要急
-
----
-
-**版本**：v1.0 - 学生版
-**最后更新**：2025-11-15
+**许可证**: MIT License
+**作者**: Johnny
+**最后更新**: 2026-01-01
