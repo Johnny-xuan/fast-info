@@ -264,5 +264,82 @@ export default function createAdminRoutes(db, authService, crawlerService = null
     }
   })
 
+  // 获取爬虫执行历史
+  router.get('/crawler/logs', requireAdmin, async (req, res) => {
+    try {
+      const { limit = 50 } = req.query
+      const result = await db.query(`
+        SELECT id, started_at, finished_at, duration_ms, total_count, new_count, 
+               source_stats, status, error_message
+        FROM crawler_logs
+        ORDER BY started_at DESC
+        LIMIT $1
+      `, [parseInt(limit)])
+
+      res.json({ 
+        success: true, 
+        data: result.rows 
+      })
+    } catch (error) {
+      console.error('Get crawler logs error:', error)
+      res.status(500).json({ success: false, message: '获取爬虫记录失败' })
+    }
+  })
+
+  // 获取爬虫统计摘要（用于图表）
+  router.get('/crawler/stats', requireAdmin, async (req, res) => {
+    try {
+      const { days = 7 } = req.query
+      
+      // 按小时聚合的统计
+      const hourlyStats = await db.query(`
+        SELECT 
+          date_trunc('hour', started_at) as time_bucket,
+          SUM(total_count) as total,
+          SUM(new_count) as new_count,
+          COUNT(*) as run_count,
+          AVG(duration_ms) as avg_duration
+        FROM crawler_logs
+        WHERE started_at >= NOW() - INTERVAL '1 day' * $1
+          AND status = 'completed'
+        GROUP BY date_trunc('hour', started_at)
+        ORDER BY time_bucket ASC
+      `, [parseInt(days)])
+
+      // 最近运行状态
+      const recentRuns = await db.query(`
+        SELECT started_at, status, total_count, new_count, duration_ms
+        FROM crawler_logs
+        ORDER BY started_at DESC
+        LIMIT 10
+      `)
+
+      // 总计统计
+      const totals = await db.query(`
+        SELECT 
+          COUNT(*) as total_runs,
+          SUM(total_count) as total_articles,
+          SUM(new_count) as total_new,
+          AVG(duration_ms) as avg_duration,
+          COUNT(CASE WHEN status = 'completed' THEN 1 END) as success_count,
+          COUNT(CASE WHEN status = 'failed' THEN 1 END) as failed_count
+        FROM crawler_logs
+        WHERE started_at >= NOW() - INTERVAL '1 day' * $1
+      `, [parseInt(days)])
+
+      res.json({ 
+        success: true, 
+        data: {
+          hourly: hourlyStats.rows,
+          recent: recentRuns.rows,
+          summary: totals.rows[0] || {}
+        }
+      })
+    } catch (error) {
+      console.error('Get crawler stats error:', error)
+      res.status(500).json({ success: false, message: '获取爬虫统计失败' })
+    }
+  })
+
   return router
 }

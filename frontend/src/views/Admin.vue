@@ -3,6 +3,18 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import request from '@/api/request'
 import Header from '@/components/Header.vue'
+import { Line } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js'
 import { 
   PhUsers, 
   PhArticle, 
@@ -14,8 +26,12 @@ import {
   PhCrown,
   PhCaretDown,
   PhArrowsClockwise,
-  PhWarningCircle
+  PhWarningCircle,
+  PhChartLine
 } from '@phosphor-icons/vue'
+
+// 注册 Chart.js 组件
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
 
 const router = useRouter()
 
@@ -47,6 +63,95 @@ const crawlerSettings = ref({
 
 // 运行状态
 const runningCrawler = ref(false)
+
+// 爬虫统计数据
+const crawlerStats = ref({
+  hourly: [],
+  recent: [],
+  summary: {}
+})
+const loadingStats = ref(false)
+
+// 图表数据
+const chartData = computed(() => {
+  const hourly = crawlerStats.value.hourly || []
+  return {
+    labels: hourly.map(h => {
+      const d = new Date(h.time_bucket)
+      return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:00`
+    }),
+    datasets: [
+      {
+        label: '新增文章',
+        data: hourly.map(h => parseInt(h.new_count) || 0),
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointHoverRadius: 6
+      },
+      {
+        label: '总爬取数',
+        data: hourly.map(h => parseInt(h.total) || 0),
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointHoverRadius: 6
+      }
+    ]
+  }
+})
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top',
+      labels: {
+        usePointStyle: true,
+        padding: 20,
+        font: { size: 12, weight: 'bold' }
+      }
+    },
+    tooltip: {
+      backgroundColor: '#1e293b',
+      titleFont: { size: 13 },
+      bodyFont: { size: 12 },
+      padding: 12,
+      cornerRadius: 8
+    }
+  },
+  scales: {
+    x: {
+      grid: { display: false },
+      ticks: { font: { size: 10 }, maxRotation: 45 }
+    },
+    y: {
+      beginAtZero: true,
+      grid: { color: '#f1f5f9' },
+      ticks: { font: { size: 11 } }
+    }
+  }
+}
+
+// 加载爬虫统计
+const loadCrawlerStats = async () => {
+  loadingStats.value = true
+  try {
+    const res = await request.get('/admin/crawler/stats', { params: { days: 7 } })
+    if (res.success) {
+      crawlerStats.value = res.data
+    }
+  } catch (e) {
+    console.error('Load crawler stats error:', e)
+  } finally {
+    loadingStats.value = false
+  }
+}
 
 // 检查管理员权限
 const checkAdmin = () => {
@@ -168,7 +273,10 @@ const cleanupArticles = async (days) => {
 const switchTab = async (tab) => {
   activeTab.value = tab
   if (tab === 'users') await loadUsers()
-  if (tab === 'crawler') await loadCrawlerSettings()
+  if (tab === 'crawler') {
+    await loadCrawlerSettings()
+    await loadCrawlerStats()
+  }
 }
 
 onMounted(async () => {
@@ -374,54 +482,133 @@ const currentScheduleLabel = computed(() => {
             </div>
 
             <!-- 爬虫设置面板 -->
-            <div v-if="activeTab === 'crawler'" class="bg-white rounded-2xl border border-slate-100 p-6">
-              <h3 class="text-lg font-bold text-slate-900 mb-6">爬虫设置</h3>
-              
-              <div class="space-y-6">
-                <!-- 爬取频率 - 简化版 -->
-                <div class="p-5 bg-slate-50 rounded-xl">
-                  <div class="flex items-center justify-between mb-4">
+            <div v-if="activeTab === 'crawler'" class="space-y-6">
+              <!-- 爬取统计图表 -->
+              <div class="bg-white rounded-2xl border border-slate-100 p-6">
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex items-center gap-3">
+                    <PhChartLine :size="24" weight="bold" class="text-blue-600" />
                     <div>
-                      <div class="font-bold text-slate-900">自动爬取频率</div>
-                      <div class="text-xs text-slate-400 mt-0.5">设置后约 1 分钟内自动生效</div>
-                    </div>
-                    <div class="text-right">
-                      <div class="text-xs text-slate-400 mb-1">当前设置</div>
-                      <div class="text-sm font-bold text-blue-600">{{ currentScheduleLabel }}</div>
+                      <h3 class="text-lg font-bold text-slate-900">爬取趋势</h3>
+                      <p class="text-xs text-slate-400">近 7 天爬虫执行统计</p>
                     </div>
                   </div>
-
-                  <select 
-                    v-model="crawlerSettings.schedule"
-                    class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option v-for="opt in scheduleOptions" :key="opt.value" :value="opt.value">
-                      {{ opt.label }}
-                    </option>
-                  </select>
-                </div>
-
-                <!-- 操作按钮 -->
-                <div class="flex flex-col sm:flex-row gap-3">
                   <button 
-                    @click="saveCrawlerSettings"
-                    class="flex-1 px-6 py-3 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-blue-600 transition-all"
+                    @click="loadCrawlerStats" 
+                    :disabled="loadingStats"
+                    class="p-2 hover:bg-slate-100 rounded-lg transition-all"
                   >
-                    保存设置
-                  </button>
-                  <button 
-                    @click="runCrawler"
-                    :disabled="runningCrawler"
-                    class="flex-1 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl text-sm font-bold hover:bg-blue-200 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    <PhSpinner v-if="runningCrawler" :size="16" class="animate-spin" weight="bold" />
-                    {{ runningCrawler ? '运行中...' : '立即运行爬虫' }}
+                    <PhArrowsClockwise :size="18" :class="['text-slate-400', loadingStats && 'animate-spin']" weight="bold" />
                   </button>
                 </div>
 
-                <!-- 提示 -->
-                <div class="text-xs text-slate-400 bg-slate-50 rounded-lg p-3">
-                  💡 点击「立即运行爬虫」可手动触发一次爬取，不影响自动调度。
+                <!-- 统计摘要卡片 -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                  <div class="bg-slate-50 rounded-xl p-4 text-center">
+                    <div class="text-2xl font-black text-blue-600">{{ crawlerStats.summary?.total_runs || 0 }}</div>
+                    <div class="text-[10px] text-slate-400 font-bold mt-1">运行次数</div>
+                  </div>
+                  <div class="bg-slate-50 rounded-xl p-4 text-center">
+                    <div class="text-2xl font-black text-green-600">{{ crawlerStats.summary?.total_new || 0 }}</div>
+                    <div class="text-[10px] text-slate-400 font-bold mt-1">新增文章</div>
+                  </div>
+                  <div class="bg-slate-50 rounded-xl p-4 text-center">
+                    <div class="text-2xl font-black text-purple-600">{{ crawlerStats.summary?.success_count || 0 }}</div>
+                    <div class="text-[10px] text-slate-400 font-bold mt-1">成功次数</div>
+                  </div>
+                  <div class="bg-slate-50 rounded-xl p-4 text-center">
+                    <div class="text-2xl font-black text-slate-600">{{ Math.round(crawlerStats.summary?.avg_duration / 1000) || 0 }}s</div>
+                    <div class="text-[10px] text-slate-400 font-bold mt-1">平均耗时</div>
+                  </div>
+                </div>
+
+                <!-- 折线图 -->
+                <div class="h-64 relative">
+                  <div v-if="loadingStats" class="absolute inset-0 flex items-center justify-center bg-white/80 z-10">
+                    <PhSpinner :size="32" class="animate-spin text-blue-600" weight="bold" />
+                  </div>
+                  <div v-else-if="!chartData.labels.length" class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                      <PhChartLine :size="48" class="text-slate-200 mx-auto mb-2" weight="bold" />
+                      <p class="text-sm text-slate-400">暂无爬取记录</p>
+                    </div>
+                  </div>
+                  <Line v-else :data="chartData" :options="chartOptions" />
+                </div>
+
+                <!-- 最近运行记录 -->
+                <div v-if="crawlerStats.recent?.length" class="mt-6 pt-6 border-t border-slate-100">
+                  <h4 class="text-sm font-bold text-slate-700 mb-3">最近运行</h4>
+                  <div class="space-y-2 max-h-40 overflow-y-auto">
+                    <div 
+                      v-for="(run, idx) in crawlerStats.recent.slice(0, 5)" 
+                      :key="idx"
+                      class="flex items-center justify-between text-xs p-2 rounded-lg hover:bg-slate-50"
+                    >
+                      <div class="flex items-center gap-2">
+                        <span :class="['w-2 h-2 rounded-full', run.status === 'completed' ? 'bg-green-500' : run.status === 'running' ? 'bg-blue-500 animate-pulse' : 'bg-red-500']"></span>
+                        <span class="text-slate-500">{{ new Date(run.started_at).toLocaleString('zh-CN') }}</span>
+                      </div>
+                      <div class="flex items-center gap-3">
+                        <span class="text-blue-600 font-bold">+{{ run.new_count || 0 }}</span>
+                        <span class="text-slate-400">/ {{ run.total_count || 0 }}</span>
+                        <span class="text-slate-300">{{ Math.round((run.duration_ms || 0) / 1000) }}s</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 爬虫设置 -->
+              <div class="bg-white rounded-2xl border border-slate-100 p-6">
+                <h3 class="text-lg font-bold text-slate-900 mb-6">爬虫设置</h3>
+                
+                <div class="space-y-6">
+                  <!-- 爬取频率 - 简化版 -->
+                  <div class="p-5 bg-slate-50 rounded-xl">
+                    <div class="flex items-center justify-between mb-4">
+                      <div>
+                        <div class="font-bold text-slate-900">自动爬取频率</div>
+                        <div class="text-xs text-slate-400 mt-0.5">设置后约 1 分钟内自动生效</div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-xs text-slate-400 mb-1">当前设置</div>
+                        <div class="text-sm font-bold text-blue-600">{{ currentScheduleLabel }}</div>
+                      </div>
+                    </div>
+
+                    <select 
+                      v-model="crawlerSettings.schedule"
+                      class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option v-for="opt in scheduleOptions" :key="opt.value" :value="opt.value">
+                        {{ opt.label }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <!-- 操作按钮 -->
+                  <div class="flex flex-col sm:flex-row gap-3">
+                    <button 
+                      @click="saveCrawlerSettings"
+                      class="flex-1 px-6 py-3 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-blue-600 transition-all"
+                    >
+                      保存设置
+                    </button>
+                    <button 
+                      @click="runCrawler"
+                      :disabled="runningCrawler"
+                      class="flex-1 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl text-sm font-bold hover:bg-blue-200 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      <PhSpinner v-if="runningCrawler" :size="16" class="animate-spin" weight="bold" />
+                      {{ runningCrawler ? '运行中...' : '立即运行爬虫' }}
+                    </button>
+                  </div>
+
+                  <!-- 提示 -->
+                  <div class="text-xs text-slate-400 bg-slate-50 rounded-lg p-3">
+                    💡 点击「立即运行爬虫」可手动触发一次爬取，不影响自动调度。
+                  </div>
                 </div>
               </div>
             </div>
