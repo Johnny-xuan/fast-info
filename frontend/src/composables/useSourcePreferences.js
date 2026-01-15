@@ -40,16 +40,43 @@ const defaultSources = {
   '华尔街见闻': false,
   '凤凰网': false,
   '贴吧': false,
-  // AI 资讯（默认开启）
+  // AI 公司博客（默认开启）
   'OpenAI Blog': true,
   'Anthropic News': true,
   'Google AI Blog': true,
   'DeepMind Blog': true,
-  'The Verge AI': true,
+  // AI 媒体（默认开启）
   'TechCrunch AI': true,
+  'The Verge AI': true,
+  'VentureBeat AI': true,
+  'MarkTechPost': true,
+  'Ars Technica AI': true,
+  'Wired AI': true,
+  'AI News': true,
+  'The Decoder': true,
+  'ScienceDaily AI': true,
+  'MIT Tech Review': true,
+  'Crunchbase News': true,
   '机器之心': true,
   '雷锋网 AI': true,
-  'VentureBeat AI': true,
+  '量子位': true,
+  // 模型追踪（默认开启）
+  'HuggingFace Models': true,
+  'HuggingFace Papers': true,
+  'Papers with Code': true,
+  // AI 大牛博客（默认开启）
+  "Lil'Log": true,
+  'Jay Alammar': true,
+  'Sebastian Raschka': true,
+  'Chip Huyen': true,
+  'Fast.ai': true,
+  // AI 框架（默认开启）
+  'PyTorch Blog': true,
+  'TensorFlow Blog': true,
+  'LangChain Blog': true,
+  // AI 教程（默认开启）
+  'Towards Data Science': true,
+  'ML Mastery': true,
 }
 
 // 全局状态

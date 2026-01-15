@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { searchArticles } from '@/api/article'
+import request from '@/api/request'
 
 const route = useRoute()
 const router = useRouter()
@@ -34,27 +35,39 @@ const timeRangeOptions = [
   { value: 'month', label: '本月' }
 ]
 
-// 数据源选项
-const sourceOptions = [
-  { value: '', label: '所有来源' },
-  { value: 'Hacker News', label: 'Hacker News' },
-  { value: 'GitHub Trending', label: 'GitHub' },
-  { value: 'Product Hunt', label: 'Product Hunt' },
-  { value: 'Dev.to', label: 'Dev.to' },
-  { value: 'arXiv', label: 'arXiv' },
-  { value: 'V2EX', label: 'V2EX' },
-  { value: '掘金', label: '掘金' },
-  { value: 'AIBase', label: 'AIBase' }
-]
+// 数据源选项（动态加载）
+const sourceOptions = ref([
+  { value: '', label: '所有来源' }
+])
+
+// 加载数据源列表
+const loadSources = async () => {
+  try {
+    const response = await request.get('/sources')
+    if (response.success && response.data) {
+      sourceOptions.value = [
+        { value: '', label: '所有来源' },
+        ...response.data.map(s => ({ 
+          value: s.source, 
+          label: `${s.source} (${s.count})` 
+        }))
+      ]
+    }
+  } catch (error) {
+    console.error('Failed to load sources:', error)
+  }
+}
 
 // 分类选项
 const categoryOptions = [
   { value: '', label: '所有分类' },
+  { value: 'ai', label: 'AI' },
   { value: 'tech', label: '科技' },
   { value: 'dev', label: '开发者' },
   { value: 'opensource', label: '开源' },
   { value: 'academic', label: '学术' },
-  { value: 'product', label: '产品' }
+  { value: 'product', label: '产品' },
+  { value: 'social', label: '热搜' }
 ]
 
 // 执行搜索
@@ -144,10 +157,31 @@ const formatTime = (dateString) => {
 }
 
 // 切换 AI 摘要显示
-const toggleAISummary = (event, articleId) => {
+const toggleAISummary = async (event, articleId) => {
   event.preventDefault()
   event.stopPropagation()
-  showAISummary.value[articleId] = !showAISummary.value[articleId]
+
+  if (showAISummary.value[articleId]) {
+    showAISummary.value[articleId] = false
+    return
+  }
+
+  showAISummary.value[articleId] = true
+
+  const article = articles.value.find(a => a.id === articleId)
+  if (!article || article.ai_summary) return
+
+  try {
+    const response = await request.post(`/articles/${articleId}/summary`)
+    if (response.success) {
+      article.ai_summary = response.summary
+    } else {
+      article.ai_summary = '获取摘要失败'
+    }
+  } catch (error) {
+    console.error('Failed to get summary:', error)
+    article.ai_summary = '网络错误，请重试'
+  }
 }
 
 // 监听路由变化
@@ -159,7 +193,10 @@ watch(() => route.query.q, (newQuery) => {
 })
 
 // 组件挂载
-onMounted(() => {
+onMounted(async () => {
+  // 加载数据源列表
+  await loadSources()
+  
   const query = route.query.q
   if (query) {
     searchQuery.value = query
@@ -404,7 +441,7 @@ onMounted(() => {
               </a>
 
               <!-- AI 摘要按钮 -->
-              <div v-if="article.ai_summary" class="mt-4 pt-4 border-t border-gray-100">
+              <div class="mt-4 pt-4 border-t border-gray-100">
                 <button
                   @click="(e) => toggleAISummary(e, article.id)"
                   class="ai-button"

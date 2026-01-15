@@ -237,6 +237,38 @@ export class CrawlerService {
       if (await this.isSourceEnabled('leiphone')) tasks.push(this.crawlSingleBlog('leiphone', '雷锋网 AI', 'https://www.leiphone.com/feed'))
       if (await this.isSourceEnabled('venturebeat-ai')) tasks.push(this.crawlSingleBlog('venturebeat-ai', 'VentureBeat AI', 'https://venturebeat.com/category/ai/feed/'))
       
+      // AI 媒体（已验证有效）
+      if (await this.isSourceEnabled('marktechpost')) tasks.push(this.crawlSingleBlog('marktechpost', 'MarkTechPost', 'https://www.marktechpost.com/feed/'))
+      if (await this.isSourceEnabled('ars-ai')) tasks.push(this.crawlSingleBlog('ars-ai', 'Ars Technica AI', 'https://feeds.arstechnica.com/arstechnica/features'))
+      if (await this.isSourceEnabled('wired-ai')) tasks.push(this.crawlSingleBlog('wired-ai', 'Wired AI', 'https://www.wired.com/feed/tag/ai/latest/rss'))
+      if (await this.isSourceEnabled('ai-news')) tasks.push(this.crawlSingleBlog('ai-news', 'AI News', 'https://www.artificialintelligence-news.com/feed/'))
+      if (await this.isSourceEnabled('the-decoder')) tasks.push(this.crawlSingleBlog('the-decoder', 'The Decoder', 'https://the-decoder.com/feed/'))
+      if (await this.isSourceEnabled('sciencedaily-ai')) tasks.push(this.crawlSingleBlog('sciencedaily-ai', 'ScienceDaily AI', 'https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml'))
+      if (await this.isSourceEnabled('mit-tech-review')) tasks.push(this.crawlSingleBlog('mit-tech-review', 'MIT Tech Review', 'https://www.technologyreview.com/feed/'))
+      if (await this.isSourceEnabled('crunchbase-news')) tasks.push(this.crawlSingleBlog('crunchbase-news', 'Crunchbase News', 'https://news.crunchbase.com/feed/'))
+      
+      // 中文 AI 媒体
+      if (await this.isSourceEnabled('qbitai')) tasks.push(this.crawlSingleBlog('qbitai', '量子位', 'https://www.qbitai.com/feed'))
+      
+      // AI 大牛博客
+      if (await this.isSourceEnabled('lillog')) tasks.push(this.crawlSingleBlog('lillog', "Lil'Log", 'https://lilianweng.github.io/index.xml'))
+      if (await this.isSourceEnabled('jalammar')) tasks.push(this.crawlSingleBlog('jalammar', 'Jay Alammar', 'https://jalammar.github.io/feed.xml'))
+      if (await this.isSourceEnabled('sraschka')) tasks.push(this.crawlSingleBlog('sraschka', 'Sebastian Raschka', 'https://sebastianraschka.com/rss_feed.xml'))
+      if (await this.isSourceEnabled('chiphuyen')) tasks.push(this.crawlSingleBlog('chiphuyen', 'Chip Huyen', 'https://huyenchip.com/feed.xml'))
+      if (await this.isSourceEnabled('fastai')) tasks.push(this.crawlSingleBlog('fastai', 'Fast.ai', 'https://www.fast.ai/index.xml'))
+      
+      // AI 框架/工具博客
+      if (await this.isSourceEnabled('pytorch-blog')) tasks.push(this.crawlSingleBlog('pytorch-blog', 'PyTorch Blog', 'https://pytorch.org/blog/feed.xml'))
+      if (await this.isSourceEnabled('tensorflow-blog')) tasks.push(this.crawlSingleBlog('tensorflow-blog', 'TensorFlow Blog', 'https://blog.tensorflow.org/feeds/posts/default'))
+      if (await this.isSourceEnabled('langchain-blog')) tasks.push(this.crawlSingleBlog('langchain-blog', 'LangChain Blog', 'https://blog.langchain.dev/rss/'))
+      
+      // AI 开发者教程
+      if (await this.isSourceEnabled('tds')) tasks.push(this.crawlSingleBlog('tds', 'Towards Data Science', 'https://towardsdatascience.com/feed'))
+      if (await this.isSourceEnabled('mlmastery')) tasks.push(this.crawlSingleBlog('mlmastery', 'ML Mastery', 'https://machinelearningmastery.com/feed/'))
+      
+      // Hugging Face 热门模型追踪
+      if (await this.isSourceEnabled('hf-models')) tasks.push(this.crawlHuggingFaceModels())
+      
       console.log(`📊 Running ${tasks.length} crawlers...`)
       await Promise.allSettled(tasks)
       
@@ -996,6 +1028,48 @@ export class CrawlerService {
       }
     } catch (error) {
       console.error(`${sourceName} failed:`, error.message)
+    }
+  }
+
+  // Hugging Face 热门模型追踪（按趋势排序）
+  async crawlHuggingFaceModels() {
+    console.log('📡 Crawling HuggingFace Models...')
+    try {
+      const limit = await this.getLimit('hf-models', 30)
+      // 按热度排序获取热门模型
+      const { data } = await axios.get('https://huggingface.co/api/models', {
+        params: {
+          sort: 'trending',
+          limit: 50,
+          full: false
+        },
+        timeout: 15000,
+        headers: { 'User-Agent': 'Mozilla/5.0' }
+      })
+      
+      let count = 0
+      for (const model of data) {
+        if (count >= limit) break
+        
+        // 获取模型类型标签
+        const taskTag = model.pipeline_tag || model.tags?.find(t => !t.startsWith('license:') && !t.startsWith('region:')) || 'Model'
+        
+        await this.saveArticle({
+          title: `🤖 ${model.modelId} (${taskTag})`,
+          url: `https://huggingface.co/${model.modelId}`,
+          source: 'HuggingFace Models',
+          category: 'ai',
+          published_at: model.lastModified ? new Date(model.lastModified) : new Date(),
+          hot_score: (model.downloads || 0) / 1000 + (model.likes || 0) * 10,
+        })
+        count++
+      }
+      
+      if (count > 0) {
+        console.log(`✅ HuggingFace Models: saved ${count} trending models`)
+      }
+    } catch (error) {
+      console.error('HuggingFace Models failed:', error.message)
     }
   }
 

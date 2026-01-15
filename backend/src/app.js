@@ -60,6 +60,9 @@ const authService = new AuthService(db)
 const agent = new LangChainAgent(articleService, db, cache)
 const crawlerService = new CrawlerService(db, cache)
 
+// 初始化全文搜索索引
+articleService.initFullTextSearch().catch(console.error)
+
 // Auth 路由
 app.use('/api/auth', createAuthRoutes(authService))
 
@@ -279,11 +282,18 @@ app.get('/api/chat/suggestions', (req, res) => {
 
 app.get('/api/articles/search', async (req, res) => {
   try {
-    const { q, limit = 10 } = req.query
-    const articles = await articleService.search(q, parseInt(limit))
-    res.json(articles)
+    const { q, limit = 20, page = 1, source, category, timeRange } = req.query
+    const result = await articleService.search(q, {
+      limit: parseInt(limit),
+      page: parseInt(page),
+      source: source || '',
+      category: category || '',
+      timeRange: timeRange || 'all'
+    })
+    res.json(result)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error('Search error:', error)
+    res.status(500).json({ success: false, error: error.message })
   }
 })
 
