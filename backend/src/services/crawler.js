@@ -42,6 +42,27 @@ export class CrawlerService {
       limits: {},
       sources: {},
       schedule: '0 * * * *',
+      retentionDays: 30,
+    }
+  }
+
+  // 清理过期文章
+  async cleanupOldArticles() {
+    try {
+      const settings = await this.getCrawlerSettings()
+      const days = settings.retentionDays || 30
+      
+      const result = await this.db.query(`
+        DELETE FROM articles 
+        WHERE created_at < NOW() - INTERVAL '1 day' * $1
+        RETURNING id
+      `, [days])
+      
+      if (result.rowCount > 0) {
+        console.log(`🗑️  Cleaned up ${result.rowCount} articles older than ${days} days`)
+      }
+    } catch (error) {
+      console.error('Cleanup old articles failed:', error.message)
     }
   }
 
@@ -223,6 +244,9 @@ export class CrawlerService {
       const durationMs = finishedAt - startedAt
       
       console.log(`✅ Multi-source crawler completed: ${this.runStats.newCount} new / ${this.runStats.total} total in ${durationMs}ms`)
+      
+      // 清理过期文章
+      await this.cleanupOldArticles()
       
       // 更新运行记录
       if (logId) {

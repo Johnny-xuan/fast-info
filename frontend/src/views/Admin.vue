@@ -58,7 +58,8 @@ const usersPagination = ref({ page: 1, limit: 20, total: 0 })
 const crawlerSettings = ref({
   schedule: '0 * * * *',
   sources: {},
-  limits: {}
+  limits: {},
+  retentionDays: 30
 })
 
 // 运行状态
@@ -300,6 +301,15 @@ const scheduleOptions = [
   { value: '0 */12 * * *', label: '每 12 小时' },
   { value: '0 0 * * *', label: '每天（0:00）' },
   { value: '0 8 * * *', label: '每天（8:00）' },
+]
+
+// 数据保留天数选项
+const retentionOptions = [
+  { value: 7, label: '7 天' },
+  { value: 14, label: '14 天' },
+  { value: 30, label: '30 天' },
+  { value: 60, label: '60 天' },
+  { value: 90, label: '90 天' },
 ]
 
 // 获取当前频率的显示文本
@@ -563,51 +573,52 @@ const currentScheduleLabel = computed(() => {
               <div class="bg-white rounded-2xl border border-slate-100 p-6">
                 <h3 class="text-lg font-bold text-slate-900 mb-6">爬虫设置</h3>
                 
-                <div class="space-y-6">
-                  <!-- 爬取频率 - 简化版 -->
-                  <div class="p-5 bg-slate-50 rounded-xl">
-                    <div class="flex items-center justify-between mb-4">
-                      <div>
-                        <div class="font-bold text-slate-900">自动爬取频率</div>
-                        <div class="text-xs text-slate-400 mt-0.5">设置后约 1 分钟内自动生效</div>
-                      </div>
-                      <div class="text-right">
-                        <div class="text-xs text-slate-400 mb-1">当前设置</div>
-                        <div class="text-sm font-bold text-blue-600">{{ currentScheduleLabel }}</div>
-                      </div>
+                <div class="space-y-4">
+                  <!-- 设置项网格 -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- 爬取频率 -->
+                    <div class="p-4 bg-slate-50 rounded-xl">
+                      <div class="text-sm font-bold text-slate-900 mb-2">爬取频率</div>
+                      <select 
+                        v-model="crawlerSettings.schedule"
+                        class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option v-for="opt in scheduleOptions" :key="opt.value" :value="opt.value">
+                          {{ opt.label }}
+                        </option>
+                      </select>
                     </div>
 
-                    <select 
-                      v-model="crawlerSettings.schedule"
-                      class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option v-for="opt in scheduleOptions" :key="opt.value" :value="opt.value">
-                        {{ opt.label }}
-                      </option>
-                    </select>
+                    <!-- 数据保留天数 -->
+                    <div class="p-4 bg-slate-50 rounded-xl">
+                      <div class="text-sm font-bold text-slate-900 mb-2">数据保留</div>
+                      <select 
+                        v-model="crawlerSettings.retentionDays"
+                        class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option v-for="opt in retentionOptions" :key="opt.value" :value="opt.value">
+                          {{ opt.label }}
+                        </option>
+                      </select>
+                    </div>
                   </div>
 
                   <!-- 操作按钮 -->
-                  <div class="flex flex-col sm:flex-row gap-3">
+                  <div class="flex gap-3 pt-2">
                     <button 
                       @click="saveCrawlerSettings"
-                      class="flex-1 px-6 py-3 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-blue-600 transition-all"
+                      class="flex-1 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-blue-600 transition-all"
                     >
                       保存设置
                     </button>
                     <button 
                       @click="runCrawler"
                       :disabled="runningCrawler"
-                      class="flex-1 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl text-sm font-bold hover:bg-blue-200 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                      class="flex-1 px-5 py-2.5 bg-blue-100 text-blue-700 rounded-xl text-sm font-bold hover:bg-blue-200 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       <PhSpinner v-if="runningCrawler" :size="16" class="animate-spin" weight="bold" />
                       {{ runningCrawler ? '运行中...' : '立即运行爬虫' }}
                     </button>
-                  </div>
-
-                  <!-- 提示 -->
-                  <div class="text-xs text-slate-400 bg-slate-50 rounded-lg p-3">
-                    💡 点击「立即运行爬虫」可手动触发一次爬取，不影响自动调度。
                   </div>
                 </div>
               </div>
