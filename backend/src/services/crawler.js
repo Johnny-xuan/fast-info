@@ -324,7 +324,7 @@ export class CrawlerService {
         return
       }
       
-      const limit = await this.getLimit('github', 20)
+      const limit = await this.getLimit('github', 30)
       for (const repo of repos.items.slice(0, limit)) {
         await this.saveArticle({
           title: `${repo.name}: ${repo.description || 'No description'}`,
@@ -355,7 +355,7 @@ export class CrawlerService {
 
       console.log(`✅ Dev.to: Fetched ${articles.length} articles`)
       
-      const limit = await this.getLimit('devto', 20)
+      const limit = await this.getLimit('devto', 30)
       console.log(`📊 Dev.to: Limit is ${limit}`)
       
       for (const article of articles.slice(0, limit)) {
@@ -378,7 +378,7 @@ export class CrawlerService {
   async crawlProductHunt() {
     console.log('📡 Crawling Product Hunt...')
     try {
-      const limit = await this.getLimit('producthunt', 20)
+      const limit = await this.getLimit('producthunt', 30)
       const { data: xml } = await axios.get('https://www.producthunt.com/feed', {
         headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' }
       })
@@ -420,7 +420,7 @@ export class CrawlerService {
       const entries = xml.match(/<entry>[\s\S]*?<\/entry>/g) || []
       console.log(`✅ arXiv: Found ${entries.length} entries`)
       
-      const limit = await this.getLimit('arxiv', 10)
+      const limit = await this.getLimit('arxiv', 30)
       for (const entry of entries.slice(0, limit)) {
         const titleMatch = entry.match(/<title>([\s\S]*?)<\/title>/)
         const linkMatch = entry.match(/<id>(.*?)<\/id>/)
@@ -460,7 +460,7 @@ export class CrawlerService {
 
       console.log(`✅ V2EX: Fetched ${topics.length} topics`)
       
-      const limit = await this.getLimit('v2ex', 15)
+      const limit = await this.getLimit('v2ex', 30)
       for (const topic of topics.slice(0, limit)) {
         let imageUrl = topic.node?.avatar_large || topic.member?.avatar_large || null
         if (imageUrl && imageUrl.startsWith('/')) {
@@ -519,7 +519,7 @@ export class CrawlerService {
       const articles = result.extract?.articles || []
       console.log(`掘金: found ${articles.length} articles`)
 
-      const limit = await this.getLimit('juejin', 15)
+      const limit = await this.getLimit('juejin', 30)
       for (const article of articles.slice(0, limit)) {
         if (article.title && article.url) {
           await this.saveArticle({
@@ -574,7 +574,7 @@ export class CrawlerService {
       const articles = result.extract?.articles || []
       console.log(`AIBase: found ${articles.length} articles`)
 
-      const limit = await this.getLimit('aibase', 15)
+      const limit = await this.getLimit('aibase', 30)
       for (const article of articles.slice(0, limit)) {
         if (article.title && article.url) {
           await this.saveArticle({
@@ -671,7 +671,7 @@ export class CrawlerService {
       const enabled = await this.isSourceEnabled(source.key)
       if (!enabled) continue
       
-      const limit = await this.getLimit(source.key, 10)
+      const limit = await this.getLimit(source.key, 30)
       
       // 重试机制
       let retries = 0
@@ -729,7 +729,7 @@ export class CrawlerService {
   async crawlLobsters() {
     console.log('📡 Crawling Lobsters...')
     try {
-      const limit = await this.getLimit('lobsters', 20)
+      const limit = await this.getLimit('lobsters', 30)
       const { data: stories } = await axios.get('https://lobste.rs/hottest.json')
       
       for (const story of stories.slice(0, limit)) {
@@ -752,7 +752,7 @@ export class CrawlerService {
   async crawlSSPai() {
     console.log('📡 Crawling 少数派...')
     try {
-      const limit = await this.getLimit('sspai', 15)
+      const limit = await this.getLimit('sspai', 30)
       const { data: xml } = await axios.get('https://sspai.com/feed')
       
       // 解析 RSS XML
@@ -787,7 +787,7 @@ export class CrawlerService {
   async crawl36Kr() {
     console.log('📡 Crawling 36氪...')
     try {
-      const limit = await this.getLimit('36kr', 15)
+      const limit = await this.getLimit('36kr', 30)
       const { data: xml } = await axios.get('https://36kr.com/feed')
       
       const items = xml.match(/<item>[\s\S]*?<\/item>/g) || []
@@ -827,7 +827,7 @@ export class CrawlerService {
   async crawlHelloGitHub() {
     console.log('📡 Crawling HelloGitHub...')
     try {
-      const limit = await this.getLimit('hellogithub', 20)
+      const limit = await this.getLimit('hellogithub', 30)
       // HelloGitHub API - 获取最新一期的项目
       const { data } = await axios.get('https://api.hellogithub.com/v1/periodical/volume/?page=1')
       
